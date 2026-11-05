@@ -41,6 +41,23 @@ export function getMediaUrl(path?: string | null): string {
   return path.startsWith('/') ? path : `/${path}`;
 }
 
+/** Resolve the CV upload, falling back to the bundled copy when the seeded media file is absent. */
+export function getCvUrl(cvFile?: string | null, cvUrl?: string | null): string {
+  if (cvFile) {
+    const normalizedPath = cvFile.replace(/\\/g, '/').split('?')[0].toLowerCase();
+    if (/(?:^|\/)(?:media\/)?cv\/mahmad9\.pdf$/.test(normalizedPath)) {
+      return '/mahmad9.pdf';
+    }
+    return getMediaUrl(cvFile);
+  }
+
+  if (cvUrl && !cvUrl.toLowerCase().endsWith('/upload/employeeresume/mahmad9.pdf')) {
+    return cvUrl;
+  }
+
+  return '/mahmad9.pdf';
+}
+
 export async function fetchHomePagePayload(): Promise<HomePagePayload> {
   const res = await fetch(`${API_BASE}/home/`);
   if (!res.ok) {

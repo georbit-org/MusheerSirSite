@@ -1,118 +1,220 @@
 /* ====================================================================
-   SWISS ACADEMIC EDITORIAL DESIGN TOKENS
-   Dr. Musheer Ahmad — Jamia Millia Islamia
+   SWISS ACADEMIC EDITORIAL DESIGN TOKENS (LIGHT & DARK THEMES)
+   Dr. Musheer Ahmad — Associate Professor, Jamia Millia Islamia
+   World's Top 2% Scientist by Stanford / Elsevier
    ==================================================================== */
 
+:root, html.light {
+  /* Exact Organic Sage & Charcoal Foundation Palette */
+  --palette-c1-charcoal: #0F172A;
+  --palette-c2-offwhite: #FFFFFF;
+  --palette-c3-matcha: #9BCD80;
+  --palette-c4-sage: #75A06A;
+  --palette-c5-deepink: #1E293B;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8FAFC;
+  --bg-elevated: #FFFFFF;
+  --bg-dark: #0F172A;
+  --bg-subtle-glow: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(117, 160, 106, 0.12), transparent 70%);
+  --bg-academic-mesh: radial-gradient(at 100% 0%, rgba(117, 160, 106, 0.06) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(155, 205, 128, 0.05) 0px, transparent 50%);
+
+  /* Typography Inks — High Contrast Editorial Scale */
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-on-dark: #FFFFFF;
+  --border-hairline: #E2E8F0;
+  --border-strong: #0F172A;
+
+  /* Kinetic grid interaction accent */
+  --accent-interaction: #2563EB;
+  --accent-interaction-tint: rgba(37, 99, 235, 0.10);
+  --accent-interaction-border: rgba(37, 99, 235, 0.35);
+  --accent-interaction-glow: rgba(37, 99, 235, 0.14);
+
+  /* Primary Accent: Sage Forest Green */
+  --accent-sage: #16A34A;
+  --accent-sage-dark: #15803D;
+  --accent-sage-hover: #166534;
+  --accent-sage-tint: rgba(22, 163, 74, 0.10);
+  --accent-sage-border: rgba(22, 163, 74, 0.25);
+
+  /* Secondary Accent: Matcha */
+  --accent-matcha: #22C55E;
+  --accent-matcha-hover: #16A34A;
+  --accent-matcha-tint: rgba(34, 197, 94, 0.15);
+  --accent-matcha-text: #14532D;
+
+  /* Stanford / Elsevier Prestige Accents */
+  --accent-gold: #15803D;
+  --accent-gold-light: #16A34A;
+  --accent-gold-tint: rgba(22, 163, 74, 0.10);
+  --accent-gold-border: rgba(22, 163, 74, 0.25);
+  --accent-gold-glow: 0 0 25px rgba(22, 163, 74, 0.20);
+
+  /* Scholarly Accents */
+  --accent-green: var(--accent-sage-dark);
+  --accent-green-hover: var(--accent-sage-hover);
+  --accent-green-tint: var(--accent-sage-tint);
+  --accent-green-light: var(--accent-matcha);
+  --accent-teal: var(--accent-sage);
+  --accent-teal-hover: var(--accent-sage-hover);
+  --accent-teal-tint: var(--accent-sage-tint);
+  --accent-amber: var(--accent-matcha);
+  --accent-amber-hover: var(--accent-matcha-hover);
+  --accent-amber-tint: var(--accent-matcha-tint);
+  --accent-amber-text: var(--accent-matcha-text);
+
+  /* Glassmorphism & Elevation */
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --glass-blur: blur(16px);
+  --glass-dark-bg: rgba(15, 23, 42, 0.85);
+
+  /* Shadows */
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  --shadow-card-hover: 0 16px 36px -4px rgba(15, 23, 42, 0.10), 0 6px 16px -2px rgba(15, 23, 42, 0.05);
+  --shadow-glow-sage: 0 0 32px rgba(22, 163, 74, 0.16);
+  --shadow-glow-matcha: 0 0 24px rgba(34, 197, 94, 0.20);
+}
+
+html.dark {
+  /* Crisp Dark Theme Scale */
+  --palette-c1-charcoal: #F8FAFC;
+  --palette-c2-offwhite: #090A0F;
+  --palette-c3-matcha: #60A5FA;
+  --palette-c4-sage: #3B82F6;
+  --palette-c5-deepink: #E2E8F0;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #090A0F;
+  --bg-secondary: #0E1017;
+  --bg-elevated: #131620;
+  --bg-dark: #090A0F;
+  --bg-subtle-glow: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.10), transparent 70%);
+  --bg-academic-mesh: radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.06) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(96, 165, 250, 0.05) 0px, transparent 50%);
+
+  /* Typography Inks — High Legibility White/Slate */
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-on-dark: #FFFFFF;
+  --border-hairline: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.28);
+
+  /* Kinetic grid interaction accent */
+  --accent-interaction: #3B82F6;
+  --accent-interaction-tint: rgba(59, 130, 246, 0.16);
+  --accent-interaction-border: rgba(59, 130, 246, 0.35);
+  --accent-interaction-glow: rgba(59, 130, 246, 0.14);
+
+  /* Primary Accent: Kinetic Grid Blue */
+  --accent-sage: #3B82F6;
+  --accent-sage-dark: #60A5FA;
+  --accent-sage-hover: #2563EB;
+  --accent-sage-tint: rgba(59, 130, 246, 0.16);
+  --accent-sage-border: rgba(59, 130, 246, 0.35);
+
+  /* Secondary Accent: Kinetic Grid Highlight */
+  --accent-matcha: #60A5FA;
+  --accent-matcha-hover: #3B82F6;
+  --accent-matcha-tint: rgba(96, 165, 250, 0.20);
+  --accent-matcha-text: #DBEAFE;
+
+  /* Prestige Accents */
+  --accent-gold: #60A5FA;
+  --accent-gold-light: #93C5FD;
+  --accent-gold-tint: rgba(59, 130, 246, 0.15);
+  --accent-gold-border: rgba(59, 130, 246, 0.35);
+  --accent-gold-glow: 0 0 25px rgba(59, 130, 246, 0.25);
+
+  /* Scholarly Accents */
+  --accent-green: var(--accent-sage-dark);
+  --accent-green-hover: var(--accent-sage-hover);
+  --accent-green-tint: var(--accent-sage-tint);
+  --accent-green-light: var(--accent-matcha);
+  --accent-teal: var(--accent-sage);
+  --accent-teal-hover: var(--accent-sage-hover);
+  --accent-teal-tint: var(--accent-sage-tint);
+  --accent-amber: var(--accent-matcha);
+  --accent-amber-hover: var(--accent-matcha-hover);
+  --accent-amber-tint: var(--accent-matcha-tint);
+  --accent-amber-text: var(--accent-matcha-text);
+
+  /* Glassmorphism & Elevation */
+  --glass-bg: rgba(13, 16, 23, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-blur: blur(16px);
+  --glass-dark-bg: rgba(9, 10, 15, 0.90);
+
+  /* Shadows */
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 4px 24px -2px rgba(0, 0, 0, 0.5), 0 2px 8px -1px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 16px 36px -4px rgba(0, 0, 0, 0.6), 0 6px 16px -2px rgba(0, 0, 0, 0.4);
+  --shadow-glow-sage: 0 0 32px rgba(59, 130, 246, 0.25);
+  --shadow-glow-matcha: 0 0 24px rgba(96, 165, 250, 0.30);
+}
+
+/* Shared Spatial & Typography Dimensions */
 :root {
-   /* ====================================================================
-     EXACT 5-SWATCH ORGANIC SAGE & CHARCOAL PALETTE
-     Directly extracted from user palette image:
-     - Swatch 1 (#1F1F1F): Carbon Charcoal Deep Ink
-     - Swatch 2 (#FFFFFF): Pure White Canvas Foundation
-     - Swatch 3 (#9BCD80): Vibrant Pistachio / Matcha Accent
-     - Swatch 4 (#75A06A): Medium Mountain Sage Foliage
-     - Swatch 5 (#272826): Warm Dark Olive Charcoal
-     ==================================================================== */
-   --palette-c1-charcoal: #1F1F1F;
-   --palette-c2-offwhite: #FFFFFF;
-   --palette-c3-matcha: #9BCD80;
-   --palette-c4-sage: #75A06A;
-   --palette-c5-deepink: #272826;
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
-   /* Surfaces & Backgrounds */
-   --bg-primary: #FFFFFF;
-   --bg-secondary: #F8F9FA;
-   --bg-elevated: #FFFFFF;
-   --bg-dark: #1F1F1F;
+  --font-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", Menlo, Consolas, Monaco, monospace;
+  --font-cursive: "Dancing Script", "Pacifico", "Alex Brush", "Great Vibes", cursive;
 
-   /* Typography Inks — High Contrast Editorial Scale */
-   --text-primary: #1F1F1F;
-   --text-secondary: #262B25;
-   --text-muted: #4D564B;
-   --text-on-dark: #FFFFFF;
-   --border-hairline: #E5E7EB;
-   --border-strong: #272826;
+  --font-display: 2.75rem;
+  --line-display: 1.1;
+  --track-display: 0;
 
-   /* Primary Accent: Sage Forest Green (Deepened to WCAG AAA contrast) */
-   --accent-sage: #75A06A;
-   --accent-sage-dark: #315328;
-   --accent-sage-hover: #486E3C;
-   --accent-sage-tint: rgba(117, 160, 106, 0.14);
+  --font-h1: 2.25rem;
+  --line-h1: 1.2;
+  --track-h1: 0;
 
-   /* Secondary Accent: Matcha / Pistachio (Swatch 3 #9BCD80 for active highlights, badges & glow) */
-   --accent-matcha: #9BCD80;
-   --accent-matcha-hover: #8ABF6F;
-   --accent-matcha-tint: rgba(155, 205, 128, 0.24);
-   --accent-matcha-text: #274D1C;
+  --font-h2: 1.75rem;
+  --line-h2: 1.3;
+  --track-h2: 0;
 
-   /* Scholarly Accents mapped to the 5-swatch palette */
-   --accent-green: var(--accent-sage-dark);
-   --accent-green-hover: var(--accent-sage-hover);
-   --accent-green-tint: var(--accent-sage-tint);
-   --accent-green-light: var(--accent-matcha);
+  --font-h3: 1.375rem;
+  --line-h3: 1.35;
+  --track-h3: 0;
 
-   --accent-teal: var(--accent-sage);
-   --accent-teal-hover: var(--accent-sage-hover);
-   --accent-teal-tint: var(--accent-sage-tint);
+  --font-body-lg: 1.0625rem;
+  --line-body-lg: 1.7;
 
-   --accent-amber: var(--accent-matcha);
-   --accent-amber-hover: var(--accent-matcha-hover);
-   --accent-amber-tint: var(--accent-matcha-tint);
-   --accent-amber-text: var(--accent-matcha-text);
+  --font-body: 0.9375rem;
+  --line-body: 1.6;
 
-   /* Typography Families */
-   --font-serif: "Newsreader", "Source Serif 4", Georgia, Cambria, "Times New Roman", serif;
-   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-   --font-mono: "JetBrains Mono", Menlo, Consolas, Monaco, monospace;
-   --font-cursive: "Dancing Script", "Pacifico", "Alex Brush", "Great Vibes", cursive;
+  --font-body-sm: 0.875rem;
+  --line-body-sm: 1.6;
 
-   /* Fluid Typography Scale */
-   --font-display: clamp(2.5rem, 5.5vw, 4.25rem);
-   --line-display: 1.05;
-   --track-display: -0.025em;
+  --font-caption: 0.8125rem;
+  --line-caption: 1.5;
 
-   --font-h1: clamp(1.85rem, 3.5vw, 2.75rem);
-   --line-h1: 1.15;
-   --track-h1: -0.02em;
+  --font-label: 0.75rem;
+  --track-label: 0.08em;
 
-   --font-h2: clamp(1.4rem, 2.5vw, 1.85rem);
-   --line-h2: 1.25;
-   --track-h2: -0.015em;
+  --max-content-width: 1240px;
+  --text-max-ch: 68ch;
+  --section-spacing: 1.5rem;
+  --gutter: clamp(1.25rem, 3.2vw, 2.75rem);
 
-   --font-h3: clamp(1.15rem, 1.8vw, 1.35rem);
-   --line-h3: 1.35;
-   --track-h3: -0.01em;
-
-   --font-body-lg: clamp(1.1rem, 1.3vw, 1.25rem);
-   --line-body-lg: 1.7;
-
-   --font-body: 1.03125rem;
-   --line-body: 1.7;
-
-   --font-body-sm: 0.9375rem;
-   --line-body-sm: 1.6;
-
-   --font-caption: 0.8125rem;
-   --line-caption: 1.5;
-
-   --font-label: 0.75rem;
-   --track-label: 0.08em;
-
-   /* Grid & Spacing Scale */
-   --max-content-width: 1200px;
-   --text-max-ch: 68ch;
-   --section-spacing: clamp(4rem, 8vw, 7.5rem);
-   --gutter: clamp(1.25rem, 3vw, 2.5rem);
-
-   /* Borders & Curvature Scale — Organic Academic Architecture */
-   --radius-xs: 4px;
-   --radius-sm: 8px;
-   --radius-md: 12px;
-   --radius-lg: 18px;
-   --radius-xl: 24px;
-   --radius-full: 9999px;
-   --radius-pill: 9999px;
-   --radius-button: 9999px;
-   --radius-subtle: 8px;
-   --radius-card: 16px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  --radius-pill: 9999px;
+  --radius-button: 9999px;
+  --radius-subtle: 8px;
+  --radius-card: 18px;
 }

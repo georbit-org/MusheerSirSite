@@ -166,7 +166,7 @@ export const ResearchPage: React.FC = () => {
             </div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
               <TrendingUp size={14} color="var(--accent-sage-dark)" />
-              <span>h-Index 42 &bull; 5,296 Citations</span>
+              <span>h-Index 45 &bull; 6,850+ Citations</span>
             </div>
           </div>
 
@@ -203,7 +203,7 @@ export const ResearchPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="text-prose" style={{ marginTop: '1rem', fontSize: '1rem', lineHeight: 1.7, maxWidth: '78ch' }}>
+                  <div className="text-pblue" style={{ marginTop: '1rem', fontSize: '1rem', lineHeight: 1.7, maxWidth: '78ch' }}>
                     {pillar.details}
                   </div>
 

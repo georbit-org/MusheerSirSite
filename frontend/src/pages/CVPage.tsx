@@ -107,9 +107,10 @@ export const CVPage: React.FC = () => {
                 <div>SCOPUS Indexed Papers: <strong style={{ color: 'var(--text-primary)' }}>151</strong></div>
                 <div>Web of Science Papers: <strong style={{ color: 'var(--text-primary)' }}>124</strong></div>
                 <div>SCIE Indexed Papers: <strong style={{ color: 'var(--text-primary)' }}>87</strong></div>
-                <div>Google Scholar Citations: <strong style={{ color: 'var(--text-primary)' }}>5,296</strong></div>
+                <div>Google Scholar Citations: <strong style={{ color: 'var(--text-primary)' }}>6,850+</strong></div>
                 <div>SCOPUS Citations: <strong style={{ color: 'var(--text-primary)' }}>3,878</strong></div>
-                <div>Google Scholar h-index: <strong style={{ color: 'var(--text-primary)' }}>42</strong></div>
+                <div>Google Scholar h-index: <strong style={{ color: 'var(--text-primary)' }}>45</strong></div>
+                <div>i10-Index: <strong style={{ color: 'var(--text-primary)' }}>120+</strong></div>
                 <div>SCOPUS h-index: <strong style={{ color: 'var(--text-primary)' }}>36</strong></div>
                 <div>Cumulative Impact Factor: <strong style={{ color: 'var(--text-primary)' }}>~ 300</strong></div>
               </div>

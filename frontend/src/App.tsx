@@ -1,7 +1,8 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchHomePagePayload } from './lib/api';
+import { ThemeProvider } from './lib/theme';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/HomePage';
 import { PublicationsPage } from './pages/PublicationsPage';
@@ -16,10 +17,18 @@ import { ContactPage } from './pages/ContactPage';
 import { StyleguidePage } from './pages/StyleguidePage';
 
 const App: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['homePayload'],
     queryFn: fetchHomePagePayload,
   });
+
+  useEffect(() => {
+    if (location.pathname === '/' && location.hash === '#publications') {
+      navigate('/publications', { replace: true });
+    }
+  }, [location.pathname, location.hash, navigate]);
 
   if (isLoading) {
     return (
@@ -90,25 +99,27 @@ const App: React.FC = () => {
   }
 
   return (
-    <Layout settings={data.settings} navigation={data.navigation}>
-      <Routes>
-        <Route path="/" element={<HomePage data={data} />} />
-        <Route path="/research" element={<ResearchPage />} />
-        <Route path="/research/:slug" element={<ResearchPage />} />
-        <Route
-          path="/publications"
-          element={<PublicationsPage settings={data.settings} />}
-        />
-        <Route path="/teaching" element={<TeachingPage />} />
-        <Route path="/service" element={<ServicePage />} />
-        <Route path="/cv" element={<CVPage />} />
-        <Route path="/group" element={<GroupPage />} />
-        <Route path="/news" element={<NewsPage />} />
-        <Route path="/join" element={<JoinPage />} />
-        <Route path="/contact" element={<ContactPage settings={data.settings} />} />
-        <Route path="/styleguide" element={<StyleguidePage />} />
-      </Routes>
-    </Layout>
+    <ThemeProvider>
+      <Layout settings={data.settings}>
+        <Routes>
+          <Route path="/" element={<HomePage data={data} />} />
+          <Route path="/research" element={<HomePage data={data} />} />
+          <Route path="/research/:slug" element={<HomePage data={data} />} />
+          <Route
+            path="/publications"
+            element={<PublicationsPage settings={data.settings} />}
+          />
+          <Route path="/teaching" element={<HomePage data={data} />} />
+          <Route path="/service" element={<HomePage data={data} />} />
+          <Route path="/cv" element={<CVPage />} />
+          <Route path="/group" element={<GroupPage />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/join" element={<HomePage data={data} />} />
+          <Route path="/contact" element={<HomePage data={data} />} />
+          <Route path="/styleguide" element={<StyleguidePage />} />
+        </Routes>
+      </Layout>
+    </ThemeProvider>
   );
 };
 

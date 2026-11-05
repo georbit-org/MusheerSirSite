@@ -1,3 +1,251 @@
 @import "./styles/tokens.css";
 @import "./styles/base.css";
 @import "./styles/components.css";
+@import "./styles/enhancements.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root svg {
+  color: inherit !important;
+}
+
+html:not(.dark) #root button:hover:not(:disabled):not(.navbar-control):not(.footer-link),
+html:not(.dark) #root [role="button"]:not(.scientific-pillar-card):not(.footer-link):hover,
+html:not(.dark) #root a[class*="btn"]:not(.navbar-control):not(.footer-link):hover,
+html:not(.dark) #root a[class*="cursor-pointer"]:not(.navbar-control):not(.footer-link):hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 23 42 / var(--tw-bg-opacity, 1)) !important;
+  border-color: rgb(15 23 42 / var(--tw-bg-opacity, 1)) !important;
+  color: #fff !important;
+}
+
+html:not(.dark) #root footer .footer-link:hover {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: rgb(15 23 42) !important;
+}
+
+#root .contact-form-box form,
+#root .contact-form-box label,
+#root .contact-form-box input,
+#root .contact-form-box textarea,
+#root .contact-form-box button {
+  font-family: var(--font-sans);
+}
+
+#root .contact-form-box .contact-submit-button {
+  background-color: #0f172a;
+  border: 1px solid rgba(15, 23, 42, 0.2);
+  color: #fff;
+}
+
+html.dark #root .contact-form-box .contact-submit-button {
+  background-color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #0f172a;
+}
+
+#root .contact-form-box .contact-submit-button:hover,
+html.dark #root .contact-form-box .contact-submit-button:hover {
+  background-color: #0f172a;
+  border-color: #0f172a;
+  color: #fff;
+}
+
+html.dark #root [class*="rounded-"]:not([class*="rounded-full"]):not(button):not(a):not(input):not(textarea) {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: none !important;
+}
+
+/* html:not(.dark) #root section,
+html:not(.dark) #root [class*="rounded-"]:not([class*="rounded-full"]):not(button):not(a):not(input):not(textarea),
+html:not(.dark) #root .grid > div {
+  border: 1px solid rgba(59, 130, 246, 0.16);
+} */
+
+#root {
+  font-family: var(--font-sans);
+  font-size: var(--font-body);
+  line-height: var(--line-body);
+}
+
+#root .font-serif {
+  font-family: var(--font-sans);
+}
+
+#root h1,
+#root h2,
+#root h3,
+#root h4,
+#root h5,
+#root h6 {
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+}
+
+#root h1 { font-size: var(--font-h1); line-height: var(--line-h1); }
+#root h2 { font-size: var(--font-h2); line-height: var(--line-h2); }
+#root h3 { font-size: var(--font-h3); line-height: var(--line-h3); }
+#root h4 { font-size: 1.125rem; line-height: 1.35; }
+#root h5 { font-size: 1rem; line-height: 1.4; }
+#root h6 { font-size: 0.875rem; line-height: 1.45; }
+
+#root p {
+  font-size: var(--font-body-sm);
+  line-height: var(--line-body-sm);
+}
+
+#root .editorial-section {
+  padding-block: var(--section-spacing);
+}
+
+.home-viewport {
+  padding-block: var(--section-spacing);
+  scroll-margin-top: 6rem;
+}
+
+@media (min-width: 1024px) and (min-height: 680px) {
+  .home-viewport {
+    height: calc(100svh - 6rem);
+    min-height: calc(100svh - 6rem);
+    max-height: calc(100svh - 6rem);
+    padding-block: 1rem;
+    overflow: hidden;
+  }
+
+  .home-viewport--hero > .grid {
+    height: 100%;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  #root .home-viewport--hero .hero-intro-cell h1 {
+    font-size: 1.625rem;
+    line-height: 1.15;
+  }
+
+  #root .home-viewport--hero .hero-intro-cell p {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  #root .home-viewport--hero .hero-intro-cell {
+    position: relative;
+    z-index: 1;
+  }
+
+  #root .home-viewport--hero .hero-intro-cell:hover {
+    z-index: 20;
+  }
+
+  #root .home-viewport--hero .hero-intro-copy {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+  }
+
+  #root .home-viewport--hero .hero-intro-cell:hover .hero-intro-copy {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+
+  .home-viewport__inner {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .home-viewport--research > .home-viewport__inner {
+    display: flex;
+    align-items: center;
+  }
+
+  .home-viewport--research .home-viewport__inner > div {
+    width: 100%;
+    height: 100%;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .home-viewport--honors > div {
+    display: flex;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .home-viewport--honors > div > .grid {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .home-viewport--contact .home-viewport__inner {
+    display: flex;
+    align-items: center;
+  }
+
+  .home-viewport--contact .home-viewport__inner > .grid {
+    width: 100%;
+    min-height: 0;
+  }
+
+}
+
+@media (max-width: 1023px), (max-height: 679px) {
+  .home-viewport--honors > div > .grid > div {
+    min-height: 28rem;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 680px) and (max-height: 800px) {
+  .home-viewport--hero > .grid > div {
+    padding: 1rem;
+  }
+
+  #root .home-viewport--hero .hero-intro-cell h1 {
+    font-size: 1.375rem;
+    line-height: 1.2;
+  }
+
+  #root .home-viewport--hero .hero-intro-cell p {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .home-viewport--hero > .grid > div:nth-child(3) > div:first-child > div:first-child {
+    max-height: 17rem !important;
+  }
+
+  .home-viewport--hero > .grid > div:nth-child(4) {
+    padding: 1rem;
+  }
+
+  .home-viewport--hero > .grid > div:nth-child(4) p {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .home-viewport--hero > .grid > div:nth-child(4) span.min-h-10 {
+    min-height: 2rem;
+    padding-block: 0.375rem;
+  }
+
+  .home-viewport--hero > .grid > div:nth-child(6) {
+    padding: 1rem;
+  }
+
+  .home-viewport--hero > .grid > div:nth-child(2) > .grid > div {
+    padding: 0.5rem;
+  }
+
+  .home-viewport--hero > .grid > div:nth-child(2) > .grid > div > div:first-child {
+    font-size: 1.75rem;
+  }
+
+  .home-viewport--contact .home-viewport__inner > .grid > div {
+    overflow-y: auto;
+  }
+}
