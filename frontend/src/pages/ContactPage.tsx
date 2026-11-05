@@ -291,9 +291,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                     <div
                       style={{
                         padding: '0.85rem 1rem',
-                        border: '1px solid rgba(176, 42, 42, 0.3)',
+                        border: '1px solid rgba(15, 23, 42, 0.3)',
                         borderRadius: 'var(--radius-sm)',
-                        background: 'rgba(176, 42, 42, 0.05)',
+                        background: 'rgba(15, 23, 42, 0.05)',
                         marginBottom: '1.5rem',
                         fontFamily: 'var(--font-sans)',
                         fontSize: '0.875rem',
@@ -459,7 +459,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                   </a>
                 </div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                  5,296 citations &bull; h-index 42
+                  6,850+ citations &bull; h-index 45 &bull; i10-index 120
                 </div>
               </div>
 

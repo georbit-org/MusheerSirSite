@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ExternalLink, FileDown, Code, ChevronDown, ChevronUp, Quote, Copy, Check, Download } from 'lucide-react';
+import { ExternalLink, FileDown, Code, ChevronDown, ChevronUp, Quote, Copy, Check, Download, Sparkles } from 'lucide-react';
 import { Publication } from '../lib/types';
 
 interface PublicationRowProps {
@@ -12,17 +12,24 @@ export const PublicationRow: React.FC<PublicationRowProps> = ({ publication }) =
   const [copied, setCopied] = useState(false);
   const [showAbstract, setShowAbstract] = useState(false);
 
-  // Sanitize Impact Factor string to remove any duplicate "IF:" or "IF: IF:"
+  // Sanitize Impact Factor string
   const cleanIF = publication.impact_factor_as_listed
     ? publication.impact_factor_as_listed.replace(/^(?:IF\s*:\s*)+/gi, '').trim()
     : '';
 
-  // Bold "Musheer Ahmad" in authors list without colorful pill badges
+  // Distinguish SCI Q1 or premier journals
+  const isQ1 = publication.index_tags && /Q1|SCI-E|SCIE|IEEE Trans/i.test(publication.index_tags);
+
+  // Bold "Musheer Ahmad" in authors list
   const renderAuthors = (authorsStr: string) => {
     const parts = authorsStr.split(/(Musheer Ahmad)/gi);
     return parts.map((part, i) => {
       if (part.toLowerCase() === 'musheer ahmad') {
-        return <strong key={i} style={{ fontWeight: 600 }}>Musheer Ahmad</strong>;
+        return (
+          <strong key={i} className="author-highlight">
+            Musheer Ahmad
+          </strong>
+        );
       }
       return <span key={i}>{part}</span>;
     });
@@ -63,55 +70,71 @@ export const PublicationRow: React.FC<PublicationRowProps> = ({ publication }) =
   };
 
   return (
-    <article className="pub-row">
-      <div className="pub-row__year">
-        {publication.year}
+    <article className="pub-card">
+      <div className="pub-card__year-badge">
+        <span>{publication.year}</span>
       </div>
 
-      <div className="pub-row__body">
-        <h3 className="pub-row__title">
-          {publication.title}
+      <div className="pub-card__content">
+        {/* Title */}
+        <h3 className="pub-card__title">
+          {publication.doi ? (
+            <a
+              href={publication.doi.startsWith('http') ? publication.doi : `https://doi.org/${publication.doi}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pub-title-link"
+            >
+              {publication.title}
+            </a>
+          ) : (
+            publication.title
+          )}
         </h3>
 
-        <div className="pub-row__authors">
+        {/* Authors */}
+        <div className="pub-card__authors">
           {renderAuthors(publication.authors)}
         </div>
 
-        {/* Venue with completely unboxed typography for IF and Indexing */}
-        <div className="pub-row__venue">
-          <span>{publication.venue}</span>
-          {publication.volume_issue_pages && <span>, {publication.volume_issue_pages}</span>}
-          
-          {(cleanIF || publication.index_tags) && (
-            <span className="pub-row__meta-badges">
-              {cleanIF && (
-                <span className="pub-badge pub-badge--if" title="Journal Impact Factor as listed in CV">
-                  IF: {cleanIF}
-                </span>
-              )}
-              {cleanIF && publication.index_tags && (
-                <span className="pub-badge-divider" aria-hidden="true">&bull;</span>
-              )}
-              {publication.index_tags && (
-                <span className="pub-badge pub-badge--scopus">
-                  {publication.index_tags}
-                </span>
-              )}
-            </span>
+        {/* Venue & Metadata Badges */}
+        <div className="pub-card__venue-row">
+          <span className="pub-venue-name">{publication.venue}</span>
+          {publication.volume_issue_pages && (
+            <span className="pub-venue-pages">, {publication.volume_issue_pages}</span>
           )}
+
+          <div className="pub-card__badges">
+            {isQ1 && (
+              <span className="badge-q1" title="Top-Quartile Impact Journal">
+                <Sparkles size={11} />
+                <span>SCI Q1</span>
+              </span>
+            )}
+            {cleanIF && (
+              <span className="badge-if" title="Journal Impact Factor">
+                IF: {cleanIF}
+              </span>
+            )}
+            {!isQ1 && publication.index_tags && (
+              <span className="badge-scopus" title="Indexing Verification">
+                {publication.index_tags}
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Action links with clean professional Lucide icons (No emojis) */}
-        <div className="pub-row__actions">
+        {/* Action Toolbar */}
+        <div className="pub-card__actions">
           {publication.doi && (
             <a
               href={publication.doi.startsWith('http') ? publication.doi : `https://doi.org/${publication.doi}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="pub-action-btn"
-              title="Open DOI external publication page"
+              className="pub-pill-btn"
+              title="Open Official DOI"
             >
-              <ExternalLink size={12} aria-hidden="true" />
+              <ExternalLink size={12} />
               <span>DOI</span>
             </a>
           )}
@@ -121,10 +144,10 @@ export const PublicationRow: React.FC<PublicationRowProps> = ({ publication }) =
               href={publication.pdf_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="pub-action-btn"
-              title="Download official PDF preprint"
+              className="pub-pill-btn"
+              title="Download PDF"
             >
-              <FileDown size={12} aria-hidden="true" />
+              <FileDown size={12} />
               <span>PDF</span>
             </a>
           )}
@@ -134,10 +157,10 @@ export const PublicationRow: React.FC<PublicationRowProps> = ({ publication }) =
               href={publication.code_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="pub-action-btn"
-              title="View source code repository"
+              className="pub-pill-btn"
+              title="Source Code Repository"
             >
-              <Code size={12} aria-hidden="true" />
+              <Code size={12} />
               <span>Code</span>
             </a>
           )}
@@ -146,9 +169,9 @@ export const PublicationRow: React.FC<PublicationRowProps> = ({ publication }) =
             <button
               type="button"
               onClick={() => setShowAbstract(!showAbstract)}
-              className="pub-action-btn"
+              className={`pub-pill-btn ${showAbstract ? 'active' : ''}`}
             >
-              {showAbstract ? <ChevronUp size={12} aria-hidden="true" /> : <ChevronDown size={12} aria-hidden="true" />}
+              {showAbstract ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
               <span>{showAbstract ? 'Hide Abstract' : 'Abstract'}</span>
             </button>
           )}
@@ -156,113 +179,75 @@ export const PublicationRow: React.FC<PublicationRowProps> = ({ publication }) =
           <button
             type="button"
             onClick={() => setShowCite(!showCite)}
-            className="pub-action-btn"
-            style={{ color: showCite ? 'var(--palette-c1-charcoal)' : undefined, fontWeight: showCite ? 600 : 400 }}
+            className={`pub-pill-btn ${showCite ? 'active' : ''}`}
           >
-            <Quote size={12} aria-hidden="true" />
+            <Quote size={12} />
             <span>{showCite ? 'Close Cite' : 'Cite'}</span>
           </button>
         </div>
 
         {/* Expandable Abstract Panel */}
         {showAbstract && publication.abstract && (
-          <div
-            style={{
-              marginTop: '0.85rem',
-              padding: '1.15rem',
-              border: '1px solid var(--border-hairline)',
-              background: 'rgba(31, 31, 31, 0.02)',
-              borderRadius: 'var(--radius-card)',
-            }}
-          >
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.35rem' }}>
-              Abstract
-            </div>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+          <div className="pub-abstract-drawer">
+            <span className="drawer-kicker">Scholarly Abstract</span>
+            <p className="drawer-text">
               {publication.abstract}
             </p>
           </div>
         )}
 
-        {/* Cite Panel with Format Tabs & Instant Copy / Download */}
+        {/* Expandable Cite Drawer */}
         {showCite && (
-          <div
-            style={{
-              marginTop: '0.85rem',
-              padding: '1.15rem',
-              border: '1px solid var(--border-hairline)',
-              background: 'var(--bg-secondary)',
-              borderRadius: '14px',
-            }}
-          >
-            {/* Format Selector Tabs */}
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '0.75rem', borderBottom: '1px solid var(--border-hairline)', paddingBottom: '0.5rem' }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                Format:
-              </span>
-              <button
-                type="button"
-                onClick={() => setCiteFormat('BIBTEX')}
-                className={`attractor-tab-btn ${citeFormat === 'BIBTEX' ? 'active' : ''}`}
-                style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem' }}
-              >
-                BibTeX
-              </button>
-              <button
-                type="button"
-                onClick={() => setCiteFormat('APA')}
-                className={`attractor-tab-btn ${citeFormat === 'APA' ? 'active' : ''}`}
-                style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem' }}
-              >
-                APA
-              </button>
-              <button
-                type="button"
-                onClick={() => setCiteFormat('IEEE')}
-                className={`attractor-tab-btn ${citeFormat === 'IEEE' ? 'active' : ''}`}
-                style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem' }}
-              >
-                IEEE
-              </button>
+          <div className="pub-cite-drawer">
+            <div className="cite-drawer__header">
+              <span className="drawer-kicker">Citation Format:</span>
+              <div className="cite-format-tabs">
+                <button
+                  type="button"
+                  onClick={() => setCiteFormat('BIBTEX')}
+                  className={`cite-tab ${citeFormat === 'BIBTEX' ? 'active' : ''}`}
+                >
+                  BibTeX
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCiteFormat('APA')}
+                  className={`cite-tab ${citeFormat === 'APA' ? 'active' : ''}`}
+                >
+                  APA
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCiteFormat('IEEE')}
+                  className={`cite-tab ${citeFormat === 'IEEE' ? 'active' : ''}`}
+                >
+                  IEEE
+                </button>
+              </div>
             </div>
 
-            {/* Citation Text View */}
-            <pre
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.8125rem',
-                lineHeight: 1.5,
-                color: 'var(--text-primary)',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-all',
-                margin: '0 0 0.85rem 0',
-                padding: '0.5rem',
-                background: 'transparent',
-              }}
-            >
+            <pre className="cite-code-block">
               {currentCitation}
             </pre>
 
-            {/* Copy & Download Actions with professional icons */}
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <div className="cite-drawer__footer">
               <button
                 type="button"
                 onClick={handleCopyCitation}
-                className="pub-action-btn"
-                style={{ fontWeight: 500 }}
+                className="btn-cite-action"
               >
-                {copied ? <Check size={13} style={{ color: 'var(--accent-sage-dark)' }} /> : <Copy size={13} />}
-                <span>{copied ? 'Copied to clipboard' : 'Copy Citation'}</span>
+                {copied ? <Check size={13} className="text-sage" /> : <Copy size={13} />}
+                <span>{copied ? 'Copied to Clipboard!' : 'Copy to Clipboard'}</span>
               </button>
 
               {citeFormat === 'BIBTEX' && (
                 <button
                   type="button"
                   onClick={handleDownloadBib}
-                  className="pub-action-btn"
+                  className="btn-cite-action"
                 >
                   <Download size={13} />
-                  <span>Download .bib</span>
+                  <span>Download .bib File</span>
                 </button>
               )}
             </div>

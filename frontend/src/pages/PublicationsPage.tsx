@@ -185,11 +185,11 @@ export const PublicationsPage: React.FC<PublicationsPageProps> = ({ settings }) 
             </div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <Quote size={13} color="var(--accent-sage-dark)" />
-              <span>Citations: <strong style={{ color: 'var(--text-primary)' }}>{(settings?.citations_count || 5296).toLocaleString()}</strong></span>
+              <span>Citations: <strong style={{ color: 'var(--text-primary)' }}>{(settings?.citations_count || 6850).toLocaleString()}+</strong></span>
             </div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <TrendingUp size={13} color="var(--accent-sage-dark)" />
-              <span>h-index: <strong style={{ color: 'var(--text-primary)' }}>{settings?.h_index || 42}</strong></span>
+              <span>h-index: <strong style={{ color: 'var(--text-primary)' }}>{settings?.h_index || 45}</strong></span>
             </div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <Award size={13} color="var(--accent-sage-dark)" />

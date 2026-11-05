@@ -29,7 +29,7 @@ export const PlaceholderPage: React.FC<PlaceholderPageProps> = ({
             {title}
           </Heading>
 
-          <p className="text-prose" style={{ marginBottom: '2rem' }}>
+          <p className="text-pblue" style={{ marginBottom: '2rem' }}>
             {description}
           </p>
 

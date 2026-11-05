@@ -1,14 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { HomePagePayload } from '../lib/types';
-import { getMediaUrl } from '../lib/api';
-import { Section } from '../components/Section';
-import { Heading } from '../components/Heading';
-import { Button } from '../components/Button';
-import { TextLink } from '../components/TextLink';
-import { PublicationRow } from '../components/PublicationRow';
-import { DateList } from '../components/DateList';
+import { getCvUrl, getMediaUrl, submitProspectiveApplication } from '../lib/api';
 import { Attractor3D } from '../components/Attractor3D';
+import { InfiniteNewsMarquee } from '../components/InfiniteNewsMarquee';
+import { ScientificPillarsHorizontal } from '../components/ScientificPillarsHorizontal';
+import { HonorsTimelineAndMarquee } from '../components/HonorsTimelineAndMarquee';
+import { AnimatedCount } from '../components/AnimatedCount';
 import {
   GoogleScholarLogo,
   ScopusLogo,
@@ -16,26 +14,32 @@ import {
   DblpLogo,
   WebOfScienceLogo,
   UniversityLogo,
+  OrcidLogo,
 } from '../components/ScholarlyLogos';
 import {
   FileText,
-  TrendingUp,
-  Quote,
   Award,
   GraduationCap,
   BookOpen,
   Users,
   Activity,
-  Cpu,
   ShieldCheck,
   Lock,
   Binary,
   Terminal,
-  ExternalLink,
   ArrowRight,
   MapPin,
   Mail,
   Building2,
+  Sparkles,
+  FileDown,
+  Phone,
+  Send,
+  CheckCircle2,
+  TrendingUp,
+  Quote,
+  Star,
+  ExternalLink,
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -47,7 +51,6 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
     settings,
     home,
     research_themes,
-    selected_publications,
     honors,
     editorial_roles,
     latest_news,
@@ -57,9 +60,7 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
     ? `${getMediaUrl(settings.portrait)}?v=2`
     : '/portraits/dr_musheer_ahmad.png?v=2';
 
-  const cvHref = settings.cv_file
-    ? getMediaUrl(settings.cv_file)
-    : settings.cv_url || '/cv';
+  const cvHref = getCvUrl(settings.cv_file, settings.cv_url);
 
   return (
     <>
@@ -67,104 +68,289 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
         <title>{home.seo_title || `${settings.professor_name} — Associate Professor | JMI`}</title>
         <meta
           name="description"
-          content={home.seo_description || 'Academic research portfolio of Dr. Musheer Ahmad, Jamia Millia Islamia.'}
+          content={home.seo_description || 'Academic research portfolio of Dr. Musheer Ahmad, Jamia Millia Islamia — World\'s Top 2% Scientist by Stanford / Elsevier.'}
         />
         <link rel="canonical" href={window.location.origin} />
       </Helmet>
 
-      {/* Hero Section — 12-Column Balanced Editorial Split (7 / 5) */}
-      <section className="editorial-section" style={{ paddingTop: 'clamp(1.25rem, 2vw, 1.85rem)' }}>
-        <div className="container">
-          <div className="hero-grid">
-            {/* 7 Columns: Identity, Appointment, Statement & Action Coordinates */}
-            <div className="hero-text-col">
-              <div className="hero-eyebrow">
-                <span>{settings.department}</span>
-                <span>/</span>
-                <span>{settings.university}</span>
+      {/* ═════════════════════════════════════════════════════════════════════════
+          HERO SECTION: 1-VIEWPORT ASYMMETRIC MODERN BENTO GRID
+          - Cell 1 (Row 1, Cols 1-5): Increased height & full content after "and..."
+          - Cell 2 (Row 1, Cols 6-8): Scholarly Impact (Swapped into Row 1)
+          - Cell 3 (Rows 1-2, Cols 9-12): Faculty Portrait (Original 537:547 ratio, NO CROPPING)
+          - Cell 4 (Row 2, Cols 1-3): Core Primitives (Swapped into Row 2)
+          - Cell 5 (Row 2, Cols 4-5): Verified Profiles
+          - Cell 6 (Row 2, Cols 6-8): Pedigree & Mentorship
+          ═════════════════════════════════════════════════════════════════════════ */}
+      <section id="hero" className="home-viewport home-viewport--hero w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 xl:px-12 font-sans">
+        <div className="w-full max-w-[1540px] h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 lg:grid-rows-[1.25fr_0.75fr] gap-4 xl:gap-5">
+          
+          {/* ───────────────────────────────────────────────────────────────────
+              CELL 1: TOP-LEFT WIDE INTRO CARD (Cols 1-5, Row 1)
+              ─────────────────────────────────────────────────────────────────── */}
+<div className="hero-intro-cell lg:col-span-5 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col justify-between shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5">
+                {/* <span className="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-500 group-hover:bg-emerald-500 transition-colors animate-pulse"></span> */}
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                  Associate Professor, 18+ Years Pedagogy
+                </span>
               </div>
+              <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                Dept. of Computer Engineering, JMI
+              </span>
+            </div>
 
-              <h1 className="hero-title">
-                {settings.professor_name}
+            <div className="flex-1 flex flex-col justify-center py-3">
+              <h1 className="text-2xl sm:text-3xl lg:text-[27px] xl:text-[31px] font-sans font-bold text-slate-900 dark:text-white leading-tight tracking-tight mb-3">
+                Investigating Nonlinear Chaos, S-Box Optimization &amp; Secure Multimedia
               </h1>
+              <p className="hero-intro-copy text-xs sm:text-[13.5px] xl:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-sans">
+                {home.intro_body || "With over 18 years of academic teaching and research experience at Jamia Millia Islamia and Aligarh Muslim University, my work investigates the mathematical design of non-linear Substitution Boxes (S-boxes), multi-dimensional continuous and discrete hyperchaotic attractors, lightweight cryptographic frameworks for Internet of Things and smart grids, and secure biomedical multimedia transmission. Our laboratory focuses on developing provably resilient cryptosystems, algebraic metaheuristic optimizations, and chaotic phase space defenses for next-generation computing infrastructures."}
+              </p>
+            </div>
 
-              <div className="hero-appointment">
-                {settings.title} of Computer Engineering
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-200/60 dark:border-white/5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 hover:border-emerald-200 dark:hover:border-emerald-500/20 transition-all cursor-default">
+                  Senior Member, IEEE
+                </span>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 hover:border-emerald-200 dark:hover:border-emerald-500/20 transition-all cursor-default">
+                  M.Tech Coordinator
+                </span>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 hover:border-emerald-200 dark:hover:border-emerald-500/20 transition-all cursor-default">
+                  CBCS Advisor
+                </span>
               </div>
-
-              {settings.secondary_roles && (
-                <div className="hero-subroles">
-                  {settings.secondary_roles}
+              <a
+                href="#research"
+                className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center gap-1.5 transition-colors"
+              >
+                <span>Explore Pillars</span>
+                <ArrowRight size={14} />
+              </a>
+            </div>
+          </div>
+{/* ───────────────────────────────────────────────────────────────────
+              CELL 2: TOP-MIDDLE SCHOLARLY IMPACT CARD (Cols 6-8, Row 1)
+              ─────────────────────────────────────────────────────────────────── */}
+          <div className="lg:col-span-3 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-emerald-500/10 group-hover:text-emerald-500 transition-all">
+                  <Award size={17} strokeWidth={2.4} />
                 </div>
-              )}
+                <span className="text-sm font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                  Scholarly Impact
+                </span>
+              </div>
+              <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 font-semibold bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-white/10 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/20 transition-all">
+                Top 2%
+              </span>
+            </div>
 
-              <p className="hero-statement">
-                {home.hero_statement || "My research investigates the mathematical and algorithmic foundations of nonlinear chaotic dynamics, cryptographic substitution-box synthesis, and secure multimedia systems — bridging dynamical systems theory with practical, provably resilient cyber security."}
-              </p>
-
-              <p className="hero-intro">
-                {home.intro_body || "Welcome. I am an Associate Professor in the Department of Computer Engineering at Jamia Millia Islamia, New Delhi, with over 18 years of pedagogical and doctoral research leadership. Our laboratory focuses on the design of hyperchaotic pseudo-random generators, algebraic S-box optimization, and medical DICOM image encryption."}
-              </p>
-
-              <div className="hero-actions">
-                <Button variant="primary" href="/publications">
-                  View Publications ({settings.total_papers || 157})
-                </Button>
-                <Button variant="secondary" href={cvHref} external>
-                  Curriculum Vitae (PDF) &rarr;
-                </Button>
+            {/* 4 metrics — flex-1 to fill space */}
+            <div className="grid grid-cols-2 gap-2.5 flex-1 min-h-0">
+              <div className="flex flex-col justify-center p-3 sm:p-4 rounded-2xl bg-slate-100/90 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5 transition-all group/tile">
+                <div className="text-3xl sm:text-4xl font-sans font-bold text-slate-900 dark:text-white leading-none group-hover/tile:text-emerald-600 dark:group-hover/tile:text-emerald-400 transition-colors">
+                  <AnimatedCount value={settings.citations_count || 5296} suffix="+" />
+                </div>
+                <div className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1.5 font-medium">Citations</div>
+              </div>
+              <div className="flex flex-col justify-center p-3 sm:p-4 rounded-2xl bg-slate-100/90 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5 transition-all group/tile">
+                <div className="text-3xl sm:text-4xl font-sans font-bold text-slate-900 dark:text-white leading-none group-hover/tile:text-emerald-600 dark:group-hover/tile:text-emerald-400 transition-colors">
+                  <AnimatedCount value={settings.h_index || 42} />
+                </div>
+                <div className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1.5 font-medium">h-Index</div>
+              </div>
+              <div className="flex flex-col justify-center p-3 sm:p-4 rounded-2xl bg-slate-100/90 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5 transition-all group/tile">
+                <div className="text-3xl sm:text-4xl font-sans font-bold text-slate-900 dark:text-white leading-none group-hover/tile:text-emerald-600 dark:group-hover/tile:text-emerald-400 transition-colors">
+                  <AnimatedCount value={settings.total_papers || 157} suffix="+" />
+                </div>
+                <div className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1.5 font-medium">Papers</div>
+              </div>
+              <div className="flex flex-col justify-center p-3 sm:p-4 rounded-2xl bg-slate-100/90 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5 transition-all group/tile">
+                <div className="text-3xl sm:text-4xl font-sans font-bold text-slate-900 dark:text-white leading-none group-hover/tile:text-emerald-600 dark:group-hover/tile:text-emerald-400 transition-colors">
+                  <AnimatedCount value={120} suffix="+" />
+                </div>
+                <div className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1.5 font-medium">i10-Index</div>
               </div>
             </div>
 
-            {/* 5 Columns: Official Faculty Portrait & Completely Unboxed Stanford Recognition */}
-            <div className="hero-portrait-col">
-              <div className="hero-portrait-wrap">
-                <img
-                  src={portraitSrc}
-                  alt={settings.portrait_alt || settings.professor_name}
-                  className="hero-portrait-img"
-                  loading="eager"
-                />
-
-                {/* Completely Unboxed Editorial Recognition — Zero box, fills vertical height naturally */}
-                <div className="hero-unboxed-honor">
-                  <div className="hero-unboxed-honor__kicker">
-                    <Award size={18} strokeWidth={2.4} />
-                    <span>World's Top 2% Scientists &bull; Stanford &amp; Elsevier</span>
-                  </div>
-                  <div className="hero-unboxed-honor__text">
-                    Ranked across <strong>Career-Long</strong> &amp; <strong>Single-Year Impact (2022–2024)</strong> in Cryptology &amp; Information Security.
-                  </div>
-                  <div className="hero-unboxed-honor__stats">
-                    <div className="hero-unboxed-honor__stat-item">
-                      <span className="stat-number">Top 2%</span>
-                      <span className="stat-desc">Global Percentile</span>
-                    </div>
-                    <span className="stat-sep" aria-hidden="true">&bull;</span>
-                    <div className="hero-unboxed-honor__stat-item">
-                      <span className="stat-number">4+ Years</span>
-                      <span className="stat-desc">Consecutive</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="pt-2.5 border-t border-slate-200/60 dark:border-white/5 flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400">
+              <span>Google Scholar, Scopus</span>
+              <span className="font-semibold hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-default">Stanford Ranking</span>
             </div>
           </div>
 
-          {/* Verified Scholar Indexes — In One Single Straight Line Across Full Width */}
-          <div className="hero-profiles-bar">
-            <span className="hero-profiles-label">Scholarly Profiles</span>
-            <div className="hero-profiles-list">
+          {/* ───────────────────────────────────────────────────────────────────
+              CELL 3: RIGHTMOST TALL FACULTY PORTRAIT CARD (Cols 9-12, Rows 1 & 2 — 4/12 width)
+              User Request: "the photo is getting cut so make it's height as original photo"
+              Original photo aspect ratio is 537:547 (~1:1 square)
+              Preserves 100% of cap and beard with zero cropping
+              ─────────────────────────────────────────────────────────────────── */}
+          <div className="lg:col-span-4 lg:row-span-2 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col justify-between shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
+            
+            {/* Top Part: Uncut Portrait Frame Matching Original Photo Dimensions (537:547) */}
+            <div>
+              <div className="w-full flex items-center justify-center">
+                <div 
+                  className="relative rounded-2xl overflow-hidden border border-slate-200/80 dark:border-white/10 bg-slate-900/60 shadow-inner group-hover:border-emerald-500/40 transition-all"
+                  style={{
+                    maxHeight: '375px',
+                    aspectRatio: '537 / 547',
+                    width: 'auto',
+                    maxWidth: '100%',
+                  }}
+                >
+                  <img
+                    src={portraitSrc}
+                    alt={settings.portrait_alt || settings.professor_name}
+                    className="w-full h-full object-contain block group-hover:scale-[1.02] transition-transform duration-500"
+                    loading="eager"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                  
+                  {/* Floating Stanford Badge on Photo */}
+                  <div className="absolute top-2.5 right-2.5 z-10">
+                    <span className="text-[11px] font-mono font-bold text-white bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Stanford Top 2%
+                    </span>
+                  </div>
+
+                  {/* Floating Location Badge on Photo */}
+                  <div className="absolute bottom-2.5 left-2.5 z-10">
+                    <span className="text-[11px] font-mono text-white/90 bg-black/75 backdrop-blur-md px-2.5 py-0.5 rounded-lg border border-white/15">
+                      {settings.office_room || 'Room 104, JMI'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Faculty Identity Details (Below Photo) */}
+              <div className="mt-3">
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <span className="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
+                    Associate Professor , JMI
+                  </span>
+                  <span className="text-[11px] font-mono text-slate-400">
+                    Central University
+                  </span>
+                </div>
+
+                <h2 className="text-2xl sm:text-[25px] font-sans font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
+                  {settings.professor_name}
+                </h2>
+
+                <div className="inline-flex items-center gap-1.5 mt-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 text-xs font-semibold">
+                  <Sparkles size={13} className="text-emerald-500 shrink-0" />
+                  <span>World's Top 2% Scientist , Stanford / Elsevier</span>
+                </div>
+
+                {/* Research Motto Quote */}
+                <blockquote className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 italic border-l-2 border-slate-300 dark:border-slate-600 pl-3 my-2 font-sans leading-relaxed">
+                  &ldquo;Building mathematically provable, chaos-resilient security architectures.&rdquo;
+                </blockquote>
+              </div>
+            </div>
+
+            {/* Bottom Part: Action CTAs */}
+            <div className="pt-2.5 border-t border-slate-200/70 dark:border-white/10 flex flex-col gap-2 mt-1">
+              <a
+                href={cvHref}
+                download="Dr-Musheer-Ahmad-CV.pdf"
+                className="w-full bg-slate-900 dark:bg-white hover:brightness-105 active:scale-[0.98] text-white dark:text-slate-900 text-xs sm:text-sm font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-slate-900/15 transition-all no-underline cursor-pointer"
+              >
+                <FileDown size={15} />
+                <span>Download Curriculum Vitae (PDF)</span>
+              </a>
+              
+              <a
+                href="#contact"
+                className="w-full bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs sm:text-sm font-semibold py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition-all no-underline text-center cursor-pointer border border-slate-200/80 dark:border-white/10"
+              >
+                <Mail size={14} />
+                <span>Inquire , Campus Office</span>
+              </a>
+            </div>
+          </div>
+
+          
+            {/* ───────────────────────────────────────────────────────────────────
+              CELL 4: BOTTOM-LEFT CORE PRIMITIVES (Cols 1-3, Row 2 — 3/12 width)
+              User Request: "swap content of scholarly impact with core primitives"
+              ─────────────────────────────────────────────────────────────────── */}
+          <div className="lg:col-span-3 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all">
+            <div className="flex flex-1 flex-col justify-evenly gap-3">
+              <div className="flex items-center justify-between mb-2.5">
+                <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                  <Binary size={18} />
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                    Core Primitives
+                  </span>
+                </div>
+                <span className="text-xs font-mono text-slate-400">Foundations</span>
+              </div>
+
+              <p className="text-sm sm:text-[15px] text-slate-600 dark:text-slate-400 mb-3 leading-relaxed">
+                Nonlinear dynamical mappings, Galois field algebra &amp; cyber defenses.
+              </p>
+
+              <div className="grid grid-cols-1 2xl:grid-cols-2 gap-2 flex-1 content-center">
+                <span className="min-h-10 text-xs sm:text-[13px] px-3 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-slate-200 font-medium flex items-center gap-2">
+                  <Lock size={12} className="text-slate-500 dark:text-slate-400" />
+                  Bijective S-Boxes
+                </span>
+                <span className="min-h-10 text-xs sm:text-[13px] px-3 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-slate-200 font-medium flex items-center gap-2">
+                  <Activity size={12} className="text-slate-500 dark:text-slate-400" />
+                  2D/3D/4D Chaos
+                </span>
+                <span className="min-h-10 text-xs sm:text-[13px] px-3 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-slate-200 font-medium flex items-center gap-2">
+                  <ShieldCheck size={12} className="text-slate-500 dark:text-slate-400" />
+                  DICOM Encryption
+                </span>
+                <span className="min-h-10 text-xs sm:text-[13px] px-3 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-slate-200 font-medium flex items-center gap-2">
+                  <Terminal size={12} className="text-slate-500 dark:text-slate-400" />
+                  PRNG Keystreams
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-2.5 border-t border-slate-200/60 dark:border-white/5 flex items-center justify-between text-xs font-mono">
+              <span className="text-slate-500 dark:text-slate-400">3D Phase Space</span>
+              <a href="#attractor" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-bold hover:underline flex items-center gap-1 transition-colors">
+                <span>Lab Deck</span>
+                <ArrowRight size={13} />
+              </a>
+            </div>
+          </div>
+
+          {/* ───────────────────────────────────────────────────────────────────
+              CELL 5: BOTTOM-MIDDLE SLIM SCHOLARLY PROFILES (Cols 4-5, Row 2 — 2/12 width)
+              ─────────────────────────────────────────────────────────────────── */}
+          <div className="lg:col-span-2 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-4 sm:p-5 flex flex-col justify-between shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs sm:text-sm font-mono font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                Profiles
+              </span>
+              <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 font-semibold bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/10 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/20 transition-colors">
+                Verified
+              </span>
+            </div>
+
+            {/* Profiles 2-Column Compact Grid */}
+            <div className="grid grid-cols-2 gap-2 flex-1 content-center py-3">
               {settings.google_scholar_url && (
                 <a
                   href={settings.google_scholar_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-profile-chip"
-                  title="Google Scholar Citation Index"
+                  className="min-h-10 flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 text-slate-800 dark:text-slate-200 transition-all text-xs font-medium no-underline"
+                  title="Google Scholar"
                 >
-                  <GoogleScholarLogo size={15} color="#75A06A" />
-                  <span>Google Scholar</span>
+                  <GoogleScholarLogo size={15} color="currentColor" />
+                  <span className="truncate">Scholar</span>
                 </a>
               )}
               {settings.scopus_url && (
@@ -172,11 +358,11 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
                   href={settings.scopus_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-profile-chip"
-                  title="Scopus Author Profile"
+                  className="min-h-10 flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 text-slate-800 dark:text-slate-200 transition-all text-xs font-medium no-underline"
+                  title="Scopus Profile"
                 >
-                  <ScopusLogo size={15} color="#75A06A" />
-                  <span>Scopus</span>
+                  <ScopusLogo size={15} color="currentColor" />
+                  <span className="truncate">Scopus</span>
                 </a>
               )}
               {settings.researchgate_url && (
@@ -184,11 +370,11 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
                   href={settings.researchgate_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-profile-chip"
-                  title="ResearchGate Scientific Network"
+                  className="min-h-10 flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 text-slate-800 dark:text-slate-200 transition-all text-xs font-medium no-underline"
+                  title="ResearchGate"
                 >
-                  <ResearchGateLogo size={15} color="#75A06A" />
-                  <span>ResearchGate</span>
+                  <ResearchGateLogo size={15} color="currentColor" />
+                  <span className="truncate">RG</span>
                 </a>
               )}
               {settings.dblp_url && (
@@ -196,23 +382,23 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
                   href={settings.dblp_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-profile-chip"
-                  title="DBLP Computer Science Bibliography"
+                  className="min-h-10 flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 text-slate-800 dark:text-slate-200 transition-all text-xs font-medium no-underline"
+                  title="DBLP"
                 >
-                  <DblpLogo size={15} color="#75A06A" />
-                  <span>DBLP</span>
+                  <DblpLogo size={15} color="currentColor" />
+                  <span className="truncate">DBLP</span>
                 </a>
               )}
-              {settings.wos_url && (
+              {settings.orcid_url && (
                 <a
-                  href={settings.wos_url}
+                  href={settings.orcid_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-profile-chip"
-                  title="Web of Science ResearcherID"
+                  className="min-h-10 flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 text-slate-800 dark:text-slate-200 transition-all text-xs font-medium no-underline"
+                  title="ORCID"
                 >
-                  <WebOfScienceLogo size={15} color="#75A06A" />
-                  <span>Web of Science</span>
+                  <OrcidLogo size={15} />
+                  <span className="truncate">ORCID</span>
                 </a>
               )}
               {settings.jmi_profile_url && (
@@ -220,443 +406,539 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
                   href={settings.jmi_profile_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-profile-chip"
-                  title="Official Jamia Millia Islamia Faculty Directory"
+                  className="min-h-10 flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 text-slate-800 dark:text-slate-200 transition-all text-xs font-medium no-underline"
+                  title="JMI Faculty"
                 >
-                  <UniversityLogo size={15} color="#75A06A" />
-                  <span>JMI Profile</span>
+                  <UniversityLogo size={15} color="currentColor" />
+                  <span className="truncate">JMI</span>
                 </a>
               )}
             </div>
+
+            <div className="pt-2 border-t border-slate-200/60 dark:border-white/5 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
+              <span className="truncate">Room 104</span>
+                  <a href="#contact" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors shrink-0">Office &rarr;</a>
+            </div>
+          
           </div>
 
-          {/* Credential Strip — 4 Full Width Columns */}
-          <div className="credential-strip">
-            <div className="credential-cell">
-              <div className="credential-number" style={{ color: 'var(--palette-c1-charcoal)' }}>
-                {settings.total_papers || 157}
-              </div>
-              <div className="credential-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
-                <FileText size={13} strokeWidth={2.2} />
-                <span>Peer-Reviewed Papers</span>
-              </div>
-              <div className="credential-sub">
-                58 Journals (SCI/SCIE/Scopus), 57 Conferences
-              </div>
-            </div>
+                    
 
-            <div className="credential-cell">
-              <div className="credential-number" style={{ color: 'var(--accent-sage-dark)' }}>
-                {settings.h_index || 42}
-              </div>
-              <div className="credential-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
-                <TrendingUp size={13} strokeWidth={2.2} />
-                <span>h-Index</span>
-              </div>
-              <div className="credential-sub">
-                Google Scholar: <strong>{settings.h_index || 42}</strong> • Scopus: <strong>{settings.h_index_scopus || 36}</strong>
-              </div>
-            </div>
-
-            <div className="credential-cell">
-              <div className="credential-number" style={{ color: 'var(--palette-c1-charcoal)' }}>
-                {(settings.citations_count || 5296).toLocaleString()}
-              </div>
-              <div className="credential-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
-                <Quote size={13} strokeWidth={2.2} />
-                <span>Citations</span>
-              </div>
-              <div className="credential-sub">
-                Google Scholar: <strong>{(settings.citations_count || 5296).toLocaleString()}</strong> • Scopus: <strong>{(settings.citations_scopus || 3878).toLocaleString()}</strong>
-              </div>
-            </div>
-
-            <div className="credential-cell">
-              <div className="credential-number" style={{ color: 'var(--accent-sage-dark)' }}>
-                18+
-              </div>
-              <div className="credential-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
-                <BookOpen size={13} strokeWidth={2.2} />
-                <span>Years of Pedagogy</span>
-              </div>
-              <div className="credential-sub">
-                Jamia Millia Islamia (2010–) &amp; AMU Aligarh (2006–2010)
-              </div>
-            </div>
-          </div>
-
-          <div className="credential-footer-note">
-            * All bibliometric metrics verified against official university curriculum vitae (as of {settings.citations_as_of || 'June 2025'}).
-          </div>
-
-          {/* Academic Profile & Career Pillars (from official CV) */}
-          <div className="credential-subsections-grid">
-            <div className="credential-col">
-              <div className="credential-col-header">
-                <GraduationCap size={16} strokeWidth={2} />
-                <span>Academic Qualifications</span>
-              </div>
-              <div className="credential-items-list">
-                <div className="credential-item">
-                  <div className="credential-item__title">Ph.D. in Computer Engineering</div>
-                  <div className="credential-item__meta">Jamia Millia Islamia, New Delhi</div>
+          
+          {/* ───────────────────────────────────────────────────────────────────
+              CELL 6: BOTTOM-MIDDLE-RIGHT PEDIGREE & SUPERVISION (Cols 6-8, Row 2 — 3/12 width)
+              ─────────────────────────────────────────────────────────────────── */}
+          <div className="lg:col-span-3 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all">
+            <div className="flex flex-1 flex-col justify-evenly gap-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                  <GraduationCap size={18} />
+                  <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                    Pedigree &amp; Mentorship
+                  </span>
                 </div>
-                <div className="credential-item">
-                  <div className="credential-item__title">M.Tech. in Computer Sc. &amp; Engg. (2008)</div>
-                  <div className="credential-item__meta">Z.H. College of Engg. &amp; Tech., AMU Aligarh</div>
+              </div>
+
+              {/* Degrees */}
+                <div className="space-y-2.5 mb-3 text-sm sm:text-[15px] text-slate-600 dark:text-slate-300 font-sans">
+                <div className="flex items-baseline gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 shrink-0"></span>
+                  <span className="font-semibold text-slate-900 dark:text-white">Ph.D. Computer Engg.</span>
+                  <span className="text-slate-400 text-xs">, JMI</span>
                 </div>
-                <div className="credential-item">
-                  <div className="credential-item__title">B.Tech. in Computer Engineering (2004)</div>
-                  <div className="credential-item__meta">Z.H. College of Engg. &amp; Tech., AMU Aligarh</div>
+                <div className="flex items-baseline gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 shrink-0"></span>
+                  <span className="font-semibold text-slate-900 dark:text-white">M.Tech. (2008)</span>
+                  <span className="text-slate-400 text-xs">, AMU</span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 shrink-0"></span>
+                  <span className="font-semibold text-slate-900 dark:text-white">B.Tech. (2004)</span>
+                  <span className="text-slate-400 text-xs">, AMU</span>
+                </div>
+              </div>
+
+              {/* Supervisory Counts */}
+              <div className="grid grid-cols-3 gap-2 text-center pt-3 border-t border-slate-200/60 dark:border-white/5">
+                <div className="min-h-[68px] p-2.5 rounded-2xl bg-slate-100/80 dark:bg-white/[0.04] border border-slate-200/70 dark:border-white/10 flex flex-col justify-center">
+                  <div className="text-xl sm:text-2xl font-bold font-sans text-slate-900 dark:text-white">6</div>
+                  <div className="text-[10px] font-mono text-slate-400 uppercase mt-0.5">Ph.D.</div>
+                </div>
+                <div className="min-h-[68px] p-2.5 rounded-2xl bg-slate-100/80 dark:bg-white/[0.04] border border-slate-200/70 dark:border-white/10 flex flex-col justify-center">
+                  <div className="text-xl sm:text-2xl font-bold font-sans text-slate-900 dark:text-white">30</div>
+                  <div className="text-[10px] font-mono text-slate-400 uppercase mt-0.5">M.Tech</div>
+                </div>
+                <div className="min-h-[68px] p-2.5 rounded-2xl bg-slate-100/80 dark:bg-white/[0.04] border border-slate-200/70 dark:border-white/10 flex flex-col justify-center">
+                  <div className="text-xl sm:text-2xl font-bold font-sans text-slate-900 dark:text-white">40+</div>
+                  <div className="text-[10px] font-mono text-slate-400 uppercase mt-0.5">B.Tech</div>
                 </div>
               </div>
             </div>
 
-            <div className="credential-col">
-              <div className="credential-col-header">
-                <BookOpen size={16} strokeWidth={2} />
-                <span>Teaching Career &amp; Leadership</span>
-              </div>
-              <div className="credential-items-list">
-                <div className="credential-item">
-                  <div className="credential-item__title">Associate Professor (18 Years Pedagogy)</div>
-                  <div className="credential-item__meta">Dept. of Computer Engineering, JMI</div>
-                </div>
-                <div className="credential-item">
-                  <div className="credential-item__title">Lecturer / Guest Faculty (2006–2010)</div>
-                  <div className="credential-item__meta">Dept. of Computer Engineering, AMU Aligarh</div>
-                </div>
-                <div className="credential-item">
-                  <div className="credential-item__title">Project &amp; Programme Leadership</div>
-                  <div className="credential-item__meta">M.Tech Project Coord. (2019–) &bull; CBCS Advisor (2015–)</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="credential-col">
-              <div className="credential-col-header">
-                <Users size={16} strokeWidth={2} />
-                <span>Research Supervision</span>
-              </div>
-              <div className="credential-items-list">
-                <div className="credential-item">
-                  <div className="credential-item__title">6 Ph.D. Scholars Active</div>
-                  <div className="credential-item__meta">Under active doctoral supervision in cryptology</div>
-                </div>
-                <div className="credential-item">
-                  <div className="credential-item__title">30 M.Tech Theses &amp; Projects</div>
-                  <div className="credential-item__meta">14 dissertations + 16 major projects completed</div>
-                </div>
-                <div className="credential-item">
-                  <div className="credential-item__title">40+ B.Tech Engineering Capstones</div>
-                  <div className="credential-item__meta">40+ completed; 2 M.Tech &amp; 3 B.Tech ongoing</div>
-                </div>
-              </div>
+            <div className="pt-2.5 border-t border-slate-200/60 dark:border-white/5 flex items-center justify-between text-xs font-mono">
+              <span className="text-slate-400">Admissions</span>
+              <a href="#join" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-bold hover:underline transition-colors">
+                Join Lab &rarr;
+              </a>
             </div>
           </div>
+
         </div>
       </section>
 
-      {/* Figure 1: Interactive Contained 3D Chaotic Attractor */}
-      <section className="editorial-section">
-        <div className="container">
-          <header className="section-header">
-            <span className="section-eyebrow">Dynamical Systems Foundation</span>
-            <h2 className="section-header__title">Nonlinear Chaos in Cryptographic Engineering</h2>
-            <p className="section-header__desc">
-              Continuous and discrete chaotic flows generate deterministic yet non-periodic phase trajectories
-              with acute sensitivity to initial conditions (&lambda; &gt; 0), providing high entropy for cipher keystreams and substitution boxes.
-            </p>
-          </header>
+      {/* Infinite Horizontal Live Announcements Marquee */}
+      <InfiniteNewsMarquee items={latest_news} />
 
-          <Attractor3D />
-        </div>
-      </section>
-
-      {/* Research Themes — 2x2 Grid Spanning Full Container */}
+      {/* Core Scientific Pillars — Text on Left, 2x2 Grid with In-Place Overlay on Right */}
       {research_themes && research_themes.length > 0 && (
-        <Section
-          label="Research Program"
-          title="Core Scientific Pillars"
-          description="Theoretical foundations, algebraic methodologies, and applied frameworks developed in the Cryptography & Nonlinear Systems Laboratory at Jamia Millia Islamia."
-          id="research"
-        >
-          <div className="themes-grid">
-            {research_themes.map((theme, index) => {
-              const themeIcons = [
-                <Lock key="lock" size={18} strokeWidth={1.8} />,
-                <Binary key="bin" size={18} strokeWidth={1.8} />,
-                <ShieldCheck key="shield" size={18} strokeWidth={1.8} />,
-                <Activity key="act" size={18} strokeWidth={1.8} />,
-              ];
-              const domainLabels = [
-                'Foundational Cryptology',
-                'Algebraic Optimization',
-                'Applied Cyber Security',
-                'Network Architectures',
-              ];
-              const selectedIcon = themeIcons[index % themeIcons.length];
-              const domainLabel = domainLabels[index % domainLabels.length];
-
-              return (
-                <article key={theme.id} className="theme-card">
-                  <div className="theme-card-top">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
-                      <div className="theme-domain-badge">
-                        {domainLabel}
-                      </div>
-                      <div style={{ color: 'var(--accent-sage-dark)', opacity: 0.9 }}>
-                        {selectedIcon}
-                      </div>
-                    </div>
-                    <h3 className="theme-title">
-                      {theme.title}
-                    </h3>
-                    <p className="theme-summary">
-                      {theme.summary}
-                    </p>
-                  </div>
-
-                  <div className="theme-footer">
-                    <span className="theme-count">
-                      {theme.paper_count ? `${theme.paper_count} Published Works` : 'Peer-Reviewed Research'}
-                    </span>
-                    <TextLink href={`/research#${theme.slug}`}>
-                      Explore theme &rarr;
-                    </TextLink>
-                  </div>
-                </article>
-              );
-            })}
+        <section id="research" className="home-viewport home-viewport--research editorial-section relative">
+          <div className="home-viewport__inner container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <ScientificPillarsHorizontal themes={research_themes} />
           </div>
-        </Section>
+        </section>
       )}
 
-      {/* Selected Publications — Full Container Width */}
-      {selected_publications && selected_publications.length > 0 && (
-        <Section
-          label="Selected Works"
-          title="Featured Peer-Reviewed Publications"
-          description="Representative contributions in premier IEEE Transactions, Springer, and Elsevier journals on chaos cryptology, S-box synthesis, and secure multimedia."
-          id="publications"
-        >
-          <div className="pub-list">
-            {selected_publications.map((pub) => (
-              <PublicationRow key={pub.id} publication={pub} />
-            ))}
-          </div>
-
-          <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <Button variant="primary" href="/publications">
-              View All Publications ({settings.total_papers || 157}) &rarr;
-            </Button>
-            {settings.cv_file && (
-              <Button variant="secondary" href={cvHref} external>
-                Complete List in CV &rarr;
-              </Button>
-            )}
-          </div>
-        </Section>
-      )}
-
-      {/* Recognition Section — Honors & Editorial Roles Split */}
-      <Section
-        label="Recognition & Service"
-        title="Honors, Scientific Awards & Editorial Appointments"
-        description="International scientific recognitions, institutional awards, and editorial leadership across SCI/SCIE peer-reviewed journals."
-        id="honors"
+      {/* ───────────────────────────────────────────────────────────────────
+          INTERACTIVE 3D CHAOTIC ATTRACTOR STUDIO (1 VIEWPORT: FIG ON LEFT, TEXT ON RIGHT)
+          ─────────────────────────────────────────────────────────────────── */}
+      <section
+        id="attractor"
+        className="home-viewport home-viewport--attractor relative w-full flex items-center justify-center overflow-hidden font-sans"
       >
-        <div className="recognition-grid">
-          {/* Left: Honors & Awards */}
-          <div>
-            <h3 className="recognition-subheading" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Award size={18} strokeWidth={2} color="var(--accent-sage-dark)" />
-              <span>Honors &amp; Scientific Distinctions</span>
-            </h3>
-            <ul className="recognition-list">
-              {honors && honors.length > 0 ? (
-                honors.map((honor) => (
-                  <li key={honor.id} className="recognition-item">
-                    <div className="recognition-year">
-                      {honor.year}
-                    </div>
-                    <div>
-                      <div className="recognition-title">
-                        {honor.title}
-                      </div>
-                      <div className="recognition-org">
-                        {honor.issuing_organization}
-                        {honor.citation && ` — ${honor.citation}`}
-                      </div>
-                    </div>
-                  </li>
-                ))
-              ) : (
-                <li className="recognition-item">
-                  <div className="recognition-year">2024</div>
-                  <div>
-                    <div className="recognition-title">World's Top 2% Scientist</div>
-                    <div className="recognition-org">Stanford University & Elsevier</div>
-                  </div>
-                </li>
-              )}
-            </ul>
-          </div>
+        <div className="home-viewport__inner container max-w-[1540px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 lg:gap-8 items-center w-full">
+            
+            {/* Left: 3D Attractor Figure Canvas Wrap (Cols 1-7) */}
+            <div className="md:col-span-7 w-full flex items-center justify-center">
+              <Attractor3D />
+            </div>
 
-          {/* Right: Editorial Roles */}
-          <div>
-            <h3 className="recognition-subheading" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <BookOpen size={18} strokeWidth={2} color="var(--accent-sage-dark)" />
-              <span>Editorial Board Appointments</span>
-            </h3>
-            <ul className="recognition-list">
-              {editorial_roles && editorial_roles.length > 0 ? (
-                editorial_roles.map((role) => (
-                  <li key={role.id} className="recognition-item">
-                    <div className="recognition-year">
-                      {role.years_active || 'Current'}
-                    </div>
-                    <div>
-                      <span className="editorial-role-tag">
-                        {role.role_type_display || 'Editorial Board Member'}
-                      </span>
-                      <div className="recognition-title">
-                        {role.journal_name}
-                      </div>
-                      <div className="recognition-org">
-                        {role.publisher && <span>{role.publisher}</span>}
-                        {role.indexing && <span> &bull; {role.indexing}</span>}
-                      </div>
-                      {role.special_issue_title && (
-                        <div className="editorial-special-issue">
-                          Special Collection: &ldquo;{role.special_issue_title}&rdquo;
-                          {role.submission_deadline && ` (Deadline: ${role.submission_deadline})`}
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                ))
-              ) : (
-                <li className="recognition-item">
-                  <div className="recognition-year">Current</div>
-                  <div>
-                    <div className="recognition-title">Springer Nature & IGI Global</div>
-                    <div className="recognition-org">Editorial Board Member & Guest Editor</div>
-                  </div>
-                </li>
-              )}
-            </ul>
-          </div>
-        </div>
-      </Section>
-
-      {/* Prospective Students Recruitment — Unboxed Editorial Split */}
-      {settings.is_accepting_students && (
-        <section className="editorial-section" id="join">
-          <div className="container">
-            <header className="section-header">
-              <span className="section-eyebrow">Academic Mentorship</span>
-              <h2 className="section-header__title">
-                {settings.student_callout_heading || 'Prospective Researchers & Doctoral Scholars'}
-              </h2>
-            </header>
-
-            <div className="recruitment-grid">
+            {/* Right: Text, Headings & Dynamical Focus (Cols 8-12) */}
+            <div className="md:col-span-5 flex flex-col justify-center space-y-3 sm:space-y-4">
               <div>
-                <p className="text-prose" style={{ fontSize: '1.05rem', lineHeight: 1.65, marginTop: 0 }}>
-                  {settings.student_callout_text || home.callout_text}
+                {/* <span className="text-[11px] font-mono font-bold tracking-widest text-emerald-600 dark:text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 inline-block mb-2">
+                  Dynamical Systems Foundation
+                </span> */}
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold font-sans text-slate-900 dark:text-white tracking-tight leading-tight">
+                  Nonlinear Chaos in Cryptographic Engineering
+                </h2>
+                <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-400 font-sans mt-2 leading-relaxed">
+                  Continuous and discrete chaotic flows generate deterministic yet non-periodic phase trajectories with acute sensitivity to initial conditions (&lambda; &gt; 0), providing provable high entropy for cipher keystreams, medical image encryption, and substitution boxes.
                 </p>
-                <div style={{ marginTop: '2rem' }}>
-                  <Button variant="primary" href="/join">
-                    Application Guidelines &rarr;
-                  </Button>
+              </div>
+
+              {/* 3 Compact Dynamics Feature Badges */}
+              <div className="space-y-2">
+                <div className="p-2.5 sm:p-3 rounded-2xl bg-white/80 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/10 shadow-sm flex items-start gap-2.5">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+                    <Activity size={14} />
+                  </div>
+                  <div>
+                    <strong className="block text-xs font-bold text-slate-900 dark:text-white font-sans">
+                      Positive Lyapunov Exponent (&lambda; &gt; 0)
+                    </strong>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight block mt-0.5">
+                      Exponential trajectory divergence guarantees algorithmic avalanche effect and resistance against linear cryptanalysis.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-2.5 sm:p-3 rounded-2xl bg-white/80 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/10 shadow-sm flex items-start gap-2.5">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+                    <Lock size={14} />
+                  </div>
+                  <div>
+                    <strong className="block text-xs font-bold text-slate-900 dark:text-white font-sans">
+                      Cryptographic Keystreams &amp; S-Boxes
+                    </strong>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight block mt-0.5">
+                      High topological entropy feeds bijective S-box synthesis and pseudo-random bit generation passing NIST SP 800-22 suites.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-2.5 sm:p-3 rounded-2xl bg-white/80 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/10 shadow-sm flex items-start gap-2.5">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+                    <Binary size={14} />
+                  </div>
+                  <div>
+                    <strong className="block text-xs font-bold text-slate-900 dark:text-white font-sans">
+                      Phase Space Ergodicity &amp; Hidden Attractors
+                    </strong>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight block mt-0.5">
+                      Non-equilibrium coexisting attractors provide extensive key spaces (&gt; 2<sup>256</sup>) nullifying phase-space reconstruction attacks.
+                    </span>
+                  </div>
+                </div>
+              </div>  
+            </div>
+
+          </div>
+              </div>
+</section>
+
+      {/* ───────────────────────────────────────────────────────────────────
+          RECOGNITION & SERVICE (1 VIEWPORT: TIMELINE ON LEFT, MARQUEE BANNERS ON RIGHT)
+          ─────────────────────────────────────────────────────────────────── */}
+      <section
+        id="honors"
+        className="home-viewport home-viewport--honors relative w-full flex items-center justify-center overflow-hidden font-sans"
+      >
+        <HonorsTimelineAndMarquee
+          honors={honors}
+          editorial_roles={editorial_roles}
+        />
+      </section>
+
+      {/* Prospective Students Recruitment — Mentorship Gateway */}
+      {settings.is_accepting_students && (
+        <section className="w-full mt-8 py-10 sm:py-12 px-4 sm:px-6 lg:px-8 xl:px-12 font-sans" id="join">
+          <div className="max-w-[1540px] mx-auto">
+
+            {/* Section Header Row */}
+            <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+              <div>
+                {/* <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block mb-1.5">
+                  Academic Mentorship , PhD Admissions
+                </span> */}
+                <h2 className="text-2xl sm:text-3xl xl:text-4xl font-sans font-bold text-slate-900 dark:text-white leading-tight tracking-tight">
+                  {settings.student_callout_heading || 'Prospective Researchers & Students'}
+                </h2>
+              </div>
+            </div>
+
+            {/* Bento Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 xl:gap-5">
+
+              {/* LEFT: Callout intro card — Cols 1-5 */}
+              <div className="lg:col-span-5 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 sm:p-7 flex flex-col gap-5 shadow-sm hover:border-emerald-500/40 transition-all">
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500">
+                      <GraduationCap size={18} strokeWidth={2.2} />
+                    </div>
+                    <span className="text-sm font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                      Open Positions
+                    </span>
+                  </div>
+                  <p className="text-sm sm:text-[14.5px] text-slate-600 dark:text-slate-300 leading-relaxed font-sans">
+                    {settings.student_callout_text || "Dr. Ahmad welcomes inquiries from highly motivated prospective Ph.D. scholars, Master's thesis researchers, and student interns with rigorous foundations in discrete mathematics, nonlinear dynamical systems, and algorithm analysis."}
+                  </p>
+
+                  {/* Quick stat pills */}
+                  <div className="flex flex-wrap gap-2 mt-5">
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
+                      Ph.D. Scholars
+                    </span>
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
+                      M.Tech Thesis
+                    </span>
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10">
+                      Research Interns
+                    </span>
+                  </div>
+                </div>
+
+                <div className="pt-5 border-t border-slate-200/60 dark:border-white/5 mt-5">
+                  <a
+                    href="#contact"
+                    className="w-full bg-[#00D5A5] hover:brightness-105 active:scale-[0.98] text-black text-sm font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-[#00D5A5]/20 transition-all no-underline cursor-pointer"
+                  >
+                    <Send size={14} />
+                    <span>Inquire for Doctoral Openings</span>
+                  </a>
                 </div>
               </div>
 
-              <div>
-                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', marginBottom: '1.25rem', color: 'var(--text-primary)' }}>
-                  Candidate Prerequisites
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                  <div style={{ display: 'flex', gap: '0.85rem', alignItems: 'flex-start' }}>
-                    <div style={{ marginTop: '0.15rem', padding: '0.45rem', borderRadius: 'var(--radius-pill)', background: 'rgba(117, 160, 106, 0.12)', color: 'var(--accent-sage-dark)', flexShrink: 0 }}>
-                      <Binary size={16} strokeWidth={2.2} />
-                    </div>
-                    <div>
-                      <strong style={{ display: 'block', fontSize: '0.9rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>
-                        Mathematical Foundations
-                      </strong>
-                      <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                        Rigorous understanding of discrete mathematics, linear algebra, modular arithmetic, and continuous/discrete dynamical systems.
-                      </span>
-                    </div>
-                  </div>
+              {/* RIGHT: Prerequisites 2×2 Bento — Cols 6-12 */}
+              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                  <div style={{ display: 'flex', gap: '0.85rem', alignItems: 'flex-start' }}>
-                    <div style={{ marginTop: '0.15rem', padding: '0.45rem', borderRadius: 'var(--radius-pill)', background: 'rgba(117, 160, 106, 0.12)', color: 'var(--accent-sage-dark)', flexShrink: 0 }}>
-                      <Terminal size={16} strokeWidth={2.2} />
+                {/* Prereq Card 1: Mathematical Foundations */}
+                <div className="bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-sm hover:border-blue-500/40 transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
+                      <Binary size={17} strokeWidth={2.3} />
                     </div>
-                    <div>
-                      <strong style={{ display: 'block', fontSize: '0.9rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>
-                        Implementation Rigor
-                      </strong>
-                      <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                        Strong computational proficiency in Python, C/C++, or MATLAB with demonstrated experience implementing algorithms from scratch.
-                      </span>
-                    </div>
+                    <span className="text-sm sm:text-base font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                      Mathematical Foundations
+                    </span>
                   </div>
-
-                  <div style={{ display: 'flex', gap: '0.85rem', alignItems: 'flex-start' }}>
-                    <div style={{ marginTop: '0.15rem', padding: '0.45rem', borderRadius: 'var(--radius-pill)', background: 'rgba(117, 160, 106, 0.12)', color: 'var(--accent-sage-dark)', flexShrink: 0 }}>
-                      <Award size={16} strokeWidth={2.2} />
-                    </div>
-                    <div>
-                      <strong style={{ display: 'block', fontSize: '0.9rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>
-                        Scholarly Motivation
-                      </strong>
-                      <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                        Genuine dedication to publishing high-quality, reproducible papers in top-tier SCI/SCIE-indexed journals.
-                      </span>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '0.85rem', alignItems: 'flex-start' }}>
-                    <div style={{ marginTop: '0.15rem', padding: '0.45rem', borderRadius: 'var(--radius-pill)', background: 'rgba(117, 160, 106, 0.12)', color: 'var(--accent-sage-dark)', flexShrink: 0 }}>
-                      <FileText size={16} strokeWidth={2.2} />
-                    </div>
-                    <div>
-                      <strong style={{ display: 'block', fontSize: '0.9rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>
-                        Application Package
-                      </strong>
-                      <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                        Send an email containing your updated CV, academic transcripts, and a concise note indicating which of Dr. Ahmad's papers you have read and propose to build upon.
-                      </span>
-                    </div>
-                  </div>
+                  <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed m-0">
+                    Rigorous understanding of discrete mathematics, linear algebra, modular arithmetic, and continuous/discrete dynamical systems.
+                  </p>
                 </div>
+
+                {/* Prereq Card 2: Implementation Rigor */}
+                <div className="bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-sm hover:border-emerald-500/40 transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 shrink-0">
+                      <Terminal size={17} strokeWidth={2.3} />
+                    </div>
+                    <span className="text-sm sm:text-base font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                      Implementation Rigor
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed m-0">
+                    Strong computational proficiency in Python, C/C++, or MATLAB with demonstrated experience implementing algorithms from scratch.
+                  </p>
+                </div>
+
+                {/* Prereq Card 3: Scholarly Motivation */}
+                <div className="bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-sm hover:border-emerald-500/40 transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 shrink-0">
+                      <Award size={17} strokeWidth={2.3} />
+                    </div>
+                    <span className="text-sm sm:text-base font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                      Scholarly Motivation
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed m-0">
+                    Genuine dedication to publishing high-quality, reproducible papers in top-tier SCI/SCIE-indexed journals.
+                  </p>
+                </div>
+
+                {/* Prereq Card 4: Application Package */}
+                <div className="bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-sm hover:border-blue-500/40 transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
+                      <FileText size={17} strokeWidth={2.3} />
+                    </div>
+                    <span className="text-sm sm:text-base font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                      Application Package
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed m-0">
+                    Send an email with your updated CV, academic transcripts, and a concise research note on which of Dr. Ahmad's papers you propose to extend.
+                  </p>
+                </div>
+
               </div>
             </div>
           </div>
         </section>
       )}
 
-      {/* Latest News & Announcements */}
-      {latest_news && latest_news.length > 0 && (
-        <Section
-          label="Lab Dispatches"
-          title="Recent News & Milestones"
-          description="Latest announcements regarding paper acceptances, keynote invitations, doctoral research milestones, and academic leadership."
-          id="news"
-        >
-          <DateList items={latest_news} />
+      {/* Contact & Campus Coordinates Monopage Section */}
+      <section className="home-viewport home-viewport--contact editorial-section" id="contact">
+        <div className="home-viewport__inner container">
+          <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-6 w-full items-stretch">
+            <div className="min-w-0 h-full bg-white/85 dark:bg-[#0E1015]/85 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-sm">
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Academic Contact</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Connect with the Department of Computer Engineering at Jamia Millia Islamia.</p>
+              <div className="space-y-5">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+                      <Building2 size={16} />
+                    </div>
+                    <div>
+                      <strong className="block text-slate-900 dark:text-white font-medium mb-0.5">
+                        Academic Department
+                      </strong>
+                      <p className="m-0 leading-relaxed text-slate-500 dark:text-slate-400">
+                        {settings.department || 'Department of Computer Engineering'},<br />
+                        Faculty of Engineering &amp; Technology,<br />
+                        {settings.university || 'Jamia Millia Islamia'} (Central University),<br />
+                        Jamia Nagar, New Delhi 110025, India
+                      </p>
+                    </div>
+                  </div>
 
-          <div style={{ marginTop: '2rem' }}>
-            <Button variant="secondary" href="/news">
-              All announcements &rarr;
-            </Button>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+                      <MapPin size={16} />
+                    </div>
+                    <div>
+                      <strong className="block text-slate-900 dark:text-white font-medium mb-0.5">
+                        Office Location
+                      </strong>
+                      <p className="m-0 text-slate-500 dark:text-slate-400">
+                        {settings.office_room || 'Room 104, Second Floor, Dept. of Computer Engineering'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+                      <Mail size={16} />
+                    </div>
+                    <div>
+                      <strong className="block text-slate-900 dark:text-white font-medium mb-0.5">
+                        Official Correspondence
+                      </strong>
+                      <a
+                        href={`mailto:${settings.email_primary || 'mahmad9@jmi.ac.in'}`}
+                        className="text-emerald-600 dark:text-emerald-400 font-mono hover:underline block"
+                      >
+                        {settings.email_primary || 'mahmad9@jmi.ac.in'}
+                      </a>
+                      {settings.email_secondary && (
+                        <a
+                          href={`mailto:${settings.email_secondary}`}
+                          className="text-slate-500 dark:text-slate-400 font-mono text-xs hover:underline block mt-0.5"
+                        >
+                          {settings.email_secondary}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+                      <Phone size={16} />
+                    </div>
+                    <div>
+                      <strong className="block text-slate-900 dark:text-white font-medium mb-0.5">
+                        Office Telephone
+                      </strong>
+                      <p className="m-0 font-mono text-slate-500 dark:text-slate-400">
+                        {settings.office_phone || '+91 11 2698 0281 / Ext. 2350'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              <div className="mt-8 pt-6 border-t border-slate-200/60 dark:border-white/10 flex items-center gap-3">
+                <span className="text-xs text-slate-400">Consultation Hours:</span>
+                <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                  Mon – Fri (10:00 AM – 5:00 PM IST)
+                </span>
+              </div>
+            </div>
+
+            {/* Right Card: Direct Inquiry Form */}
+            <div className="min-w-0 h-full bg-white/85 dark:bg-[#0E1015]/85 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-sm contact-form-box">
+              <h3 className="font-serif text-xl font-semibold text-slate-900 dark:text-white mb-2">
+                Send Direct Message
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+                Inquiries are delivered directly to Dr. Ahmad's university mailbox.
+              </p>
+
+              <ContactForm />
+            </div>
           </div>
-        </Section>
-      )}
+        </div>
+      </section>
     </>
+  );
+};
+
+const ContactForm: React.FC = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    affiliation: '',
+    subject: '',
+    message: '',
+  });
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('submitting');
+    try {
+      await submitProspectiveApplication({
+        full_name: formData.name,
+        email: formData.email,
+        current_institution: formData.affiliation || 'Direct Correspondence',
+        degree_and_gpa: 'Academic Contact Message',
+        position_applied_for: `Contact: ${formData.subject || 'Direct Inquiry'}`,
+        research_statement: formData.message,
+        paper_reference: `Subject: ${formData.subject || 'Direct Message'}`,
+        cv_url_or_link: 'https://direct-contact.inquiry',
+      });
+      setStatus('success');
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  if (status === 'success') {
+    return (
+      <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center">
+        <CheckCircle2 size={32} className="text-emerald-500 mx-auto mb-2" />
+        <h4 className="font-semibold text-emerald-800 dark:text-emerald-300 text-sm">
+          Message Transmitted
+        </h4>
+        <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 mb-0">
+          Your inquiry has been delivered directly to Dr. Ahmad's office mailbox.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="form-label text-xs font-sans uppercase text-slate-500 dark:text-slate-400 block mb-1">
+          Full Name
+        </label>
+        <input
+          type="text"
+          required
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          placeholder="e.g. Dr. Jane Smith"
+          className="w-full font-sans text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/15 bg-white dark:bg-black/50 text-slate-900 dark:text-white focus:outline-none focus:border-slate-500 dark:focus:border-white/40 transition-colors"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label className="form-label text-xs font-sans uppercase text-slate-500 dark:text-slate-400 block mb-1">
+            Email Address
+          </label>
+          <input
+            type="email"
+            required
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            placeholder="name@university.edu"
+            className="w-full font-sans text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/15 bg-white dark:bg-black/50 text-slate-900 dark:text-white focus:outline-none focus:border-slate-500 dark:focus:border-white/40 transition-colors"
+          />
+        </div>
+        <div>
+          <label className="form-label text-xs font-sans uppercase text-slate-500 dark:text-slate-400 block mb-1">
+            Affiliation
+          </label>
+          <input
+            type="text"
+            value={formData.affiliation}
+            onChange={(e) => setFormData({ ...formData, affiliation: e.target.value })}
+            placeholder="Institution / Lab"
+            className="w-full font-sans text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/15 bg-white dark:bg-black/50 text-slate-900 dark:text-white focus:outline-none focus:border-slate-500 dark:focus:border-white/40 transition-colors"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="form-label text-xs font-sans uppercase text-slate-500 dark:text-slate-400 block mb-1">
+          Message
+        </label>
+        <textarea
+          required
+          rows={10}
+          value={formData.message}
+          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+          placeholder="Brief summary of your research inquiry or proposal..."
+          className="w-full font-sans text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/15 bg-white dark:bg-black/50 text-slate-900 dark:text-white focus:outline-none focus:border-slate-500 dark:focus:border-white/40 transition-colors"
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={status === 'submitting'}
+        className="contact-submit-button w-full btn-primary text-xs font-sans font-semibold py-3 rounded-full flex items-center justify-center gap-2 cursor-pointer shadow-md"
+      >
+        <span>{status === 'submitting' ? 'Transmitting...' : 'Send Correspondence'}</span>
+        <Send size={13} />
+      </button>
+
+      {status === 'error' && (
+        <p className="text-xs text-blue-500 text-center m-0">
+          Failed to transmit. Please email directly to mahmad9@jmi.ac.in
+        </p>
+      )}
+    </form>
   );
 };

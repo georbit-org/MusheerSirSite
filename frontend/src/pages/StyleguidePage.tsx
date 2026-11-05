@@ -57,7 +57,7 @@ export const StyleguidePage: React.FC = () => {
         <Heading level="h1" style={{ marginBottom: '1rem' }}>
           Swiss Academic Design System
         </Heading>
-        <p className="text-prose" style={{ marginBottom: '2.5rem' }}>
+        <p className="text-pblue" style={{ marginBottom: '2.5rem' }}>
           Strict light theme, pure CSS variables, self-hosted typography (Newsreader, Inter, JetBrains Mono),
           and zero icon dependencies.
         </p>
@@ -109,8 +109,8 @@ export const StyleguidePage: React.FC = () => {
             <Heading level="h3">Lightweight Ciphers for Edge Sensor Nodes</Heading>
           </div>
           <div>
-            <div className="section-label" style={{ marginBottom: '0.5rem' }}>Prose Text (Inter 17px/1.65)</div>
-            <p className="text-prose">
+            <div className="section-label" style={{ marginBottom: '0.5rem' }}>Pblue Text (Inter 17px/1.65)</div>
+            <p className="text-pblue">
               The synthesis of cryptographic S-boxes forms the non-linear foundation of modern symmetric block ciphers.
               Our research explores continuous hyperchaotic attractors, high-dimensional discrete maps, and projective geometric
               transformations to systematically engineer bijective S-boxes satisfying strict cryptographic benchmarks.
@@ -135,7 +135,7 @@ export const StyleguidePage: React.FC = () => {
 
           <div>
             <div className="section-label" style={{ marginBottom: '0.75rem' }}>TextLink Elements</div>
-            <p className="text-prose">
+            <p className="text-pblue">
               Links inside editorial copy are formatted with{' '}
               <TextLink href="/publications">underlined text that transitions cleanly to deep green</TextLink>{' '}
               upon user hover.

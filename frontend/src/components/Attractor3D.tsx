@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
+import { RotateCcw, Play, Pause, Compass, Activity, Sparkles } from 'lucide-react';
 
 type AttractorType = 'lorenz' | 'chen' | 'rossler' | 'chua' | 'sprott';
 
@@ -13,12 +14,14 @@ interface AttractorConfig {
   center: [number, number, number];
   equations: (x: number, y: number, z: number) => [number, number, number];
   description: string;
+  formula: string;
+  lyapunov: string;
 }
 
 const ATTRACTOR_CONFIGS: Record<AttractorType, AttractorConfig> = {
   lorenz: {
     name: 'Lorenz',
-    label: 'Lorenz (1963)',
+    label: 'Lorenz System (1963)',
     dt: 0.008,
     steps: 5000,
     initial: [0.1, 0, 0],
@@ -35,10 +38,12 @@ const ATTRACTOR_CONFIGS: Record<AttractorType, AttractorConfig> = {
       ];
     },
     description: 'dx/dt = 10(y - x), dy/dt = x(28 - z) - y, dz/dt = xy - 8/3z',
+    formula: 'σ=10, ρ=28, β=8/3',
+    lyapunov: 'λ₁ = +0.9056 (Chaotic Flow)',
   },
   chen: {
     name: 'Chen',
-    label: 'Chen (1999)',
+    label: 'Chen Attractor (1999)',
     dt: 0.005,
     steps: 5500,
     initial: [-0.1, 0.5, -0.6],
@@ -55,10 +60,12 @@ const ATTRACTOR_CONFIGS: Record<AttractorType, AttractorConfig> = {
       ];
     },
     description: 'dx/dt = 35(y - x), dy/dt = -7x - xz + 28y, dz/dt = xy - 3z',
+    formula: 'a=35, b=3, c=28',
+    lyapunov: 'λ₁ = +2.027 (Dual Scroll Hyperchaotic)',
   },
   rossler: {
     name: 'Rössler',
-    label: 'Rössler (1976)',
+    label: 'Rössler Attractor (1976)',
     dt: 0.02,
     steps: 5000,
     initial: [0.1, 0, 0],
@@ -75,10 +82,12 @@ const ATTRACTOR_CONFIGS: Record<AttractorType, AttractorConfig> = {
       ];
     },
     description: 'dx/dt = -y - z, dy/dt = x + 0.2y, dz/dt = 0.2 + z(x - 5.7)',
+    formula: 'a=0.2, b=0.2, c=5.7',
+    lyapunov: 'λ₁ = +0.0714 (Spiral Chaos)',
   },
   chua: {
     name: 'Chua',
-    label: 'Chua Double Scroll',
+    label: 'Chua Double Scroll Circuit',
     dt: 0.015,
     steps: 5000,
     initial: [0.7, 0, 0],
@@ -97,10 +106,12 @@ const ATTRACTOR_CONFIGS: Record<AttractorType, AttractorConfig> = {
       ];
     },
     description: 'Piecewise-linear non-linear resistor double-scroll attractor',
+    formula: 'α=9.0, β=14.286, m₀=-1/7, m₁=2/7',
+    lyapunov: 'λ₁ = +0.3421 (Memristive Circuit)',
   },
   sprott: {
     name: 'Sprott',
-    label: 'Sprott (Case B)',
+    label: 'Sprott Minimal Flow (Case B)',
     dt: 0.02,
     steps: 5000,
     initial: [0.1, 0.1, 0.1],
@@ -114,6 +125,8 @@ const ATTRACTOR_CONFIGS: Record<AttractorType, AttractorConfig> = {
       ];
     },
     description: 'dx/dt = yz, dy/dt = x - y, dz/dt = 1 - xy (Minimal chaotic flow)',
+    formula: 'Polynomial 2nd degree nonlinearity',
+    lyapunov: 'λ₁ = +0.1342 (Quadratic Flow)',
   },
 };
 
@@ -161,6 +174,7 @@ function integrateTrajectory(config: AttractorConfig): Float32Array {
 export const Attractor3D: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeType, setActiveType] = useState<AttractorType>('lorenz');
+  const [isAutoRotating, setIsAutoRotating] = useState(true);
   const lineMeshRef = useRef<THREE.Line | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
@@ -189,12 +203,21 @@ export const Attractor3D: React.FC = () => {
     }
   }, []);
 
+  const resetView = () => {
+    if (groupRef.current) {
+      groupRef.current.rotation.set(0.4, 0.6, 0);
+    }
+    if (cameraRef.current) {
+      cameraRef.current.position.set(0, 0, 260);
+    }
+  };
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const width = container.clientWidth || 800;
-    const height = container.clientHeight || 380;
+    const height = container.clientHeight || 420;
 
     // Scene
     const scene = new THREE.Scene();
@@ -222,9 +245,9 @@ export const Attractor3D: React.FC = () => {
     // Line material with Sage Green from palette (#75A06A)
     const material = new THREE.LineBasicMaterial({
       color: 0x75A06A,
-      linewidth: 1.4,
+      linewidth: 1.5,
       transparent: true,
-      opacity: 0.92,
+      opacity: 0.94,
     });
 
     const geometry = new THREE.BufferGeometry();
@@ -240,7 +263,7 @@ export const Attractor3D: React.FC = () => {
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      if (groupRef.current && !isDraggingRef.current) {
+      if (groupRef.current && !isDraggingRef.current && isAutoRotating) {
         groupRef.current.rotation.y += 0.0035;
         groupRef.current.rotation.x += 0.001;
       }
@@ -308,7 +331,7 @@ export const Attractor3D: React.FC = () => {
       geometry.dispose();
       material.dispose();
     };
-  }, [updateGeometry, activeType]);
+  }, [updateGeometry, activeType, isAutoRotating]);
 
   // Handle system switch
   const handleSelectSystem = (type: AttractorType) => {
@@ -317,36 +340,77 @@ export const Attractor3D: React.FC = () => {
   };
 
   return (
-    <div className="attractor-figure-wrap">
-      <div className="attractor-controls-bar">
-        <div className="attractor-system-tabs">
+    <div className="attractor-figure-wrap w-full rounded-3xl overflow-hidden border border-slate-200/80 dark:border-white/10 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md shadow-xl flex flex-col justify-between font-sans m-0">
+      {/* Top Deck: System Selector + Dynamic Controls */}
+      <div className="attractor-controls-bar p-2.5 sm:p-3 border-b border-slate-200/70 dark:border-white/10 bg-slate-50/80 dark:bg-black/30 flex items-center justify-between flex-wrap gap-2">
+        <div className="attractor-system-tabs flex items-center gap-1.5 flex-wrap">
           {(Object.keys(ATTRACTOR_CONFIGS) as AttractorType[]).map((type) => (
             <button
               key={type}
               type="button"
               onClick={() => handleSelectSystem(type)}
-              className={`attractor-tab-btn ${activeType === type ? 'active' : ''}`}
+              className={`text-xs font-mono px-2.5 py-1 rounded-full transition-all cursor-pointer ${
+                activeType === type
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-black font-bold shadow-sm'
+                  : 'bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-emerald-500/50'
+              }`}
             >
               {ATTRACTOR_CONFIGS[type].name}
             </button>
           ))}
         </div>
+
+        {/* Action Controls */}
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setIsAutoRotating(!isAutoRotating)}
+            className="inline-flex items-center gap-1 px-2.5 py-1 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full font-mono text-[11px] text-slate-700 dark:text-slate-300 hover:border-emerald-500/50 cursor-pointer transition-colors"
+            title={isAutoRotating ? 'Pause Rotation' : 'Resume Auto-Rotation'}
+          >
+            {isAutoRotating ? <Pause size={11} /> : <Play size={11} />}
+            <span>{isAutoRotating ? 'Pause' : 'Rotate'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={resetView}
+            className="inline-flex items-center gap-1 px-2.5 py-1 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full font-mono text-[11px] text-slate-700 dark:text-slate-300 hover:border-emerald-500/50 cursor-pointer transition-colors"
+            title="Reset Phase Space Angle"
+          >
+            <RotateCcw size={11} />
+            <span>Reset</span>
+          </button>
+        </div>
       </div>
 
+      {/* Trajectory Canvas Container */}
       <div
         ref={containerRef}
-        className="attractor-canvas-wrapper"
-        title="Drag with mouse to rotate 3D phase space trajectory • Scroll to zoom"
+        className="attractor-canvas-wrapper w-full h-[250px] sm:h-[270px] lg:h-[290px] cursor-grab relative"
+        title="Click and drag with mouse to orbit 3D phase space • Scroll wheel to zoom"
       />
 
-      <div className="attractor-caption-box">
-        <div>
-          <strong>Figure 1:</strong>
-          Numerical Runge-Kutta (RK4) integration of the {activeConfig.label} continuous non-linear dynamical system.
-          In non-linear cryptography, sensitive dependence on initial conditions (&lambda; &gt; 0) governs pseudorandom sequence generation, confusion-diffusion matrix synthesis, and image cipher keystream expansion.
+      {/* Compact Dynamics Metadata Readout Box */}
+      <div className="attractor-caption-box p-2.5 sm:p-3 border-t border-slate-200/70 dark:border-white/10 bg-slate-50/60 dark:bg-black/20 text-xs font-mono">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-emerald-600 dark:text-emerald-400">
+              FIGURE 1: {activeConfig.label}
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 font-semibold">
+              {activeConfig.lyapunov}
+            </span>
+          </div>
+
+          <div className="text-slate-400 text-[10px] hidden sm:inline">
+            RK4 &bull; N = 5,000 steps
+          </div>
         </div>
-        <div style={{ marginTop: '0.45rem', fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
-          State Space ODE: {activeConfig.description} • Drag to orbit, scroll to zoom.
+
+        <div className="mt-1.5 text-slate-500 dark:text-slate-400 text-[11px] truncate">
+          <span className="text-emerald-600 dark:text-emerald-400 font-semibold">&bull; State Equations: </span>
+          <code className="text-slate-700 dark:text-slate-300">{activeConfig.description}</code>
         </div>
       </div>
     </div>

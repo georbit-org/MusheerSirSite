@@ -358,9 +358,9 @@ export const JoinPage: React.FC = () => {
                   <div
                     style={{
                       padding: '1rem',
-                      border: '1px solid rgba(176, 42, 42, 0.3)',
+                      border: '1px solid rgba(15, 23, 42, 0.3)',
                       borderRadius: 'var(--radius-sm)',
-                      background: 'rgba(176, 42, 42, 0.05)',
+                      background: 'rgba(15, 23, 42, 0.05)',
                       marginBottom: '2rem',
                       fontFamily: 'var(--font-sans)',
                       fontSize: '0.875rem',

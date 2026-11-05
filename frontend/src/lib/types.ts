@@ -118,10 +118,13 @@ export interface NewsItem {
 export interface Honor {
   id: number;
   title: string;
-  issuing_organization: string;
-  year: string;
+  issuing_organization?: string;
+  awarding_body?: string;
+  year: string | number;
+  date_details?: string;
   citation?: string;
-  is_featured: boolean;
+  description?: string;
+  is_featured?: boolean;
   order: number;
 }
 
