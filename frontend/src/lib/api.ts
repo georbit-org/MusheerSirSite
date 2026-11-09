@@ -9,16 +9,19 @@ import {
   ApplicationSubmission,
 } from './types';
 
-// Support Vite import.meta.env safely across TS configs
-const meta = import.meta as unknown as { env?: { VITE_API_URL?: string; PROD?: boolean } };
+declare global {
+  interface ImportMeta {
+    readonly env: { VITE_API_URL?: string; PROD: boolean };
+  }
+}
 
 // Vite replaces this value at build time. Keep the production fallback pointed at
 // the Render API so a missing static-site build variable never hits the SPA host.
 export const API_BASE = (() => {
-  if (meta && meta.env && meta.env.VITE_API_URL) {
-    return meta.env.VITE_API_URL.replace(/\/$/, '');
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL.replace(/\/$/, '');
   }
-  if (meta?.env?.PROD) {
+  if (import.meta.env.PROD) {
     return 'https://musheer-academic-api.onrender.com/api/v1';
   }
   return '/api/v1';
