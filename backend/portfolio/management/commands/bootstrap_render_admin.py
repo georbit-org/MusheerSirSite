@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 
 class Command(BaseCommand):
-    help = 'Create the initial Render CMS administrator from one-time environment variables.'
+    help = 'Create the Render CMS administrator or update its password when explicitly enabled.'
 
     def handle(self, *args, **options):
         username = os.environ.get('DJANGO_SUPERUSER_USERNAME', '').strip()
@@ -19,8 +19,21 @@ class Command(BaseCommand):
             )
 
         user_model = get_user_model()
-        if user_model.objects.filter(**{user_model.USERNAME_FIELD: username}).exists():
-            self.stdout.write('CMS administrator already exists; no changes made.')
+        user = user_model.objects.filter(**{user_model.USERNAME_FIELD: username}).first()
+        if user:
+            update_password = os.environ.get('DJANGO_SUPERUSER_UPDATE_PASSWORD', '').lower() in (
+                'true', '1', 'yes'
+            )
+            if not update_password:
+                self.stdout.write('CMS administrator already exists; no changes made.')
+                return
+
+            user.email = email
+            user.is_staff = True
+            user.is_superuser = True
+            user.set_password(password)
+            user.save(update_fields=['email', 'is_staff', 'is_superuser', 'password'])
+            self.stdout.write(self.style.SUCCESS('CMS administrator password updated.'))
             return
 
         user_model.objects.create_superuser(

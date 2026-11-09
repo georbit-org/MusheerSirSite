@@ -5,7 +5,7 @@ services:
     plan: free
     region: singapore
     buildCommand: pip install -r backend/requirements.txt && cd backend && python manage.py collectstatic --noinput
-    startCommand: cd backend && mkdir -p media/portraits media/cv && cp -n ../frontend/public/portraits/dr_musheer_ahmad.png media/portraits/dr_musheer_ahmad.png && cp -n ../frontend/public/mahmad9.pdf media/cv/mahmad9.pdf && python manage.py migrate --noinput && exec gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+    startCommand: cd backend && mkdir -p media/portraits media/cv && cp -n ../frontend/public/portraits/dr_musheer_ahmad.png media/portraits/dr_musheer_ahmad.png && cp -n ../frontend/public/mahmad9.pdf media/cv/mahmad9.pdf && python manage.py migrate --noinput && python manage.py bootstrap_render_admin && exec gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120
     healthCheckPath: /healthz
     initialDeployHook: cd backend && python manage.py bootstrap_render_admin && python manage.py seed_academic_structure && python manage.py import_cv_publications
     envVars:
@@ -30,6 +30,8 @@ services:
         sync: false
       - key: DJANGO_SUPERUSER_PASSWORD
         sync: false
+      - key: DJANGO_SUPERUSER_UPDATE_PASSWORD
+        value: "false"
 
   - type: web
     name: musheer-academic-site
