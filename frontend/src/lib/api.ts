@@ -10,13 +10,16 @@ import {
 } from './types';
 
 // Support Vite import.meta.env safely across TS configs
-const meta = import.meta as unknown as { env?: { VITE_API_URL?: string } };
+const meta = import.meta as unknown as { env?: { VITE_API_URL?: string; PROD?: boolean } };
 
-// When VITE_API_URL is set (e.g. https://njbxd17r-8000.inc1.devtunnels.ms/api/v1), use it.
-// Otherwise default to relative '/api/v1', which works seamlessly on localhost and through Dev Tunnels via Vite's proxy.
+// Vite replaces this value at build time. Keep the production fallback pointed at
+// the Render API so a missing static-site build variable never hits the SPA host.
 export const API_BASE = (() => {
   if (meta && meta.env && meta.env.VITE_API_URL) {
     return meta.env.VITE_API_URL.replace(/\/$/, '');
+  }
+  if (meta?.env?.PROD) {
+    return 'https://musheer-academic-api.onrender.com/api/v1';
   }
   return '/api/v1';
 })();
@@ -29,9 +32,9 @@ export function getMediaUrl(path?: string | null): string {
   if (!path) return '';
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
 
-  if (meta && meta.env && meta.env.VITE_API_URL && meta.env.VITE_API_URL.startsWith('http')) {
+  if (API_BASE.startsWith('http')) {
     try {
-      const origin = new URL(meta.env.VITE_API_URL).origin;
+      const origin = new URL(API_BASE).origin;
       return `${origin}${path.startsWith('/') ? '' : '/'}${path}`;
     } catch {
       // fallback
