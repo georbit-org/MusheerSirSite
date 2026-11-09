@@ -9,6 +9,9 @@ services:
     healthCheckPath: /healthz
     initialDeployHook: cd backend && python manage.py bootstrap_render_admin && python manage.py seed_academic_structure && python manage.py import_cv_publications
     envVars:
+      # Django 5.1 is supported through Python 3.13; Render's new-service default is 3.14.
+      - key: PYTHON_VERSION
+        value: 3.13.5
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DJANGO_DEBUG
