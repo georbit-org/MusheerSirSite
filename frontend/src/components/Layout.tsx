@@ -44,6 +44,14 @@ export const Layout: React.FC<LayoutProps> = ({
   const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
+    if (location.pathname === '/research' || location.pathname.startsWith('/research/')) {
+      setActiveSection('research');
+    } else if (location.pathname !== '/') {
+      setActiveSection('');
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY + 200;
       for (let i = monopageSections.length - 1; i >= 0; i--) {
@@ -142,12 +150,14 @@ export const Layout: React.FC<LayoutProps> = ({
             {/* Center: Enlarged Sleek Navigation Capsule */}
             <nav className="hidden lg:flex items-center rounded-full p-2 shadow-lg dark:shadow-2xl border border-slate-200 dark:border-white/15 bg-white dark:bg-[#090A0F] backdrop-blur-xl transition-colors">
               {monopageSections.map((item) => {
-                const isActive = activeSection === item.id;
+                const isActive = item.id === 'research'
+                  ? location.pathname === '/research' || location.pathname.startsWith('/research/')
+                  : location.pathname === '/' && activeSection === item.id;
                 return (
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => scrollToSection(item.id)}
+                    onClick={() => item.id === 'research' ? navigate('/research') : scrollToSection(item.id)}
                     className={
                       isActive
                         ? "navbar-control bg-slate-900 text-white dark:bg-white dark:text-black font-bold px-5 py-2.5 rounded-full text-xs sm:text-sm shadow-md transition-all duration-200 cursor-pointer"
