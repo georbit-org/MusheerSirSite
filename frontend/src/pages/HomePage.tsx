@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { HomePagePayload } from '../lib/types';
 import { getCvUrl, getMediaUrl, submitProspectiveApplication } from '../lib/api';
-import { Attractor3D } from '../components/Attractor3D';
 import { InfiniteNewsMarquee } from '../components/InfiniteNewsMarquee';
 import { ScientificPillarsHorizontal } from '../components/ScientificPillarsHorizontal';
 import { HonorsTimelineAndMarquee } from '../components/HonorsTimelineAndMarquee';
@@ -41,6 +40,10 @@ import {
   Star,
   ExternalLink,
 } from 'lucide-react';
+
+const Attractor3D = lazy(() =>
+  import('../components/Attractor3D').then(({ Attractor3D: Component }) => ({ default: Component })),
+);
 
 interface HomePageProps {
   data: HomePagePayload;
@@ -88,7 +91,7 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
           {/* ───────────────────────────────────────────────────────────────────
               CELL 1: TOP-LEFT WIDE INTRO CARD (Cols 1-5, Row 1)
               ─────────────────────────────────────────────────────────────────── */}
-<div className="hero-intro-cell lg:col-span-5 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col justify-between shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
+<div className="hero-intro-cell lg:col-span-5 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col justify-between shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2.5">
                 {/* <span className="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-500 group-hover:bg-emerald-500 transition-colors animate-pulse"></span> */}
@@ -134,7 +137,7 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
 {/* ───────────────────────────────────────────────────────────────────
               CELL 2: TOP-MIDDLE SCHOLARLY IMPACT CARD (Cols 6-8, Row 1)
               ─────────────────────────────────────────────────────────────────── */}
-          <div className="lg:col-span-3 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
+          <div className="lg:col-span-3 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-emerald-500/10 group-hover:text-emerald-500 transition-all">
@@ -149,31 +152,25 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
               </span>
             </div>
 
-            {/* 4 metrics — flex-1 to fill space */}
-            <div className="grid grid-cols-2 gap-2.5 flex-1 min-h-0">
-              <div className="flex flex-col justify-center p-3 sm:p-4 rounded-2xl bg-slate-100/90 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5 transition-all group/tile">
-                <div className="text-3xl sm:text-4xl font-sans font-bold text-slate-900 dark:text-white leading-none group-hover/tile:text-emerald-600 dark:group-hover/tile:text-emerald-400 transition-colors">
+            {/* Three sourced metrics, updated from the CMS when available. */}
+            <div className="grid min-h-0 flex-1 grid-cols-2 grid-rows-[auto_minmax(0,1fr)] gap-2.5">
+              <div className="col-span-2 flex min-w-0 items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-slate-100/90 p-3 transition-all hover:border-emerald-500/30 hover:bg-emerald-50/50 group/tile dark:border-white/10 dark:bg-white/[0.04] dark:hover:bg-emerald-500/5 sm:p-4">
+                <div className="whitespace-nowrap text-3xl font-sans font-bold leading-none tabular-nums text-slate-900 transition-colors group-hover/tile:text-emerald-600 dark:text-white dark:group-hover/tile:text-emerald-400 sm:text-4xl">
                   <AnimatedCount value={settings.citations_count || 5296} suffix="+" />
                 </div>
-                <div className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1.5 font-medium">Citations</div>
+                <div className="text-right text-xs font-mono font-medium text-slate-500 dark:text-slate-400">Google Scholar citations</div>
               </div>
-              <div className="flex flex-col justify-center p-3 sm:p-4 rounded-2xl bg-slate-100/90 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5 transition-all group/tile">
-                <div className="text-3xl sm:text-4xl font-sans font-bold text-slate-900 dark:text-white leading-none group-hover/tile:text-emerald-600 dark:group-hover/tile:text-emerald-400 transition-colors">
-                  <AnimatedCount value={settings.h_index || 42} />
+              <div className="flex min-w-0 flex-col items-center justify-center overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100/90 p-3 transition-all hover:border-emerald-500/30 hover:bg-emerald-50/50 group/tile dark:border-white/10 dark:bg-white/[0.04] dark:hover:bg-emerald-500/5 sm:p-4">
+                <div className="whitespace-nowrap text-3xl font-sans font-bold leading-none tabular-nums text-slate-900 transition-colors group-hover/tile:text-emerald-600 dark:text-white dark:group-hover/tile:text-emerald-400 sm:text-4xl">
+                  <AnimatedCount value={settings.h_index || 42} suffix="+" />
                 </div>
-                <div className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1.5 font-medium">h-Index</div>
+                <div className="mt-1.5 text-center text-xs font-mono font-medium text-slate-500 dark:text-slate-400">h-index</div>
               </div>
-              <div className="flex flex-col justify-center p-3 sm:p-4 rounded-2xl bg-slate-100/90 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5 transition-all group/tile">
-                <div className="text-3xl sm:text-4xl font-sans font-bold text-slate-900 dark:text-white leading-none group-hover/tile:text-emerald-600 dark:group-hover/tile:text-emerald-400 transition-colors">
+              <div className="flex min-w-0 flex-col items-center justify-center overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100/90 p-3 transition-all hover:border-emerald-500/30 hover:bg-emerald-50/50 group/tile dark:border-white/10 dark:bg-white/[0.04] dark:hover:bg-emerald-500/5 sm:p-4">
+                <div className="whitespace-nowrap text-3xl font-sans font-bold leading-none tabular-nums text-slate-900 transition-colors group-hover/tile:text-emerald-600 dark:text-white dark:group-hover/tile:text-emerald-400 sm:text-4xl">
                   <AnimatedCount value={settings.total_papers || 157} suffix="+" />
                 </div>
-                <div className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1.5 font-medium">Papers</div>
-              </div>
-              <div className="flex flex-col justify-center p-3 sm:p-4 rounded-2xl bg-slate-100/90 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5 transition-all group/tile">
-                <div className="text-3xl sm:text-4xl font-sans font-bold text-slate-900 dark:text-white leading-none group-hover/tile:text-emerald-600 dark:group-hover/tile:text-emerald-400 transition-colors">
-                  <AnimatedCount value={120} suffix="+" />
-                </div>
-                <div className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1.5 font-medium">i10-Index</div>
+                <div className="mt-1.5 text-center text-xs font-mono font-medium text-slate-500 dark:text-slate-400">Papers</div>
               </div>
             </div>
 
@@ -189,7 +186,7 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
               Original photo aspect ratio is 537:547 (~1:1 square)
               Preserves 100% of cap and beard with zero cropping
               ─────────────────────────────────────────────────────────────────── */}
-          <div className="lg:col-span-4 lg:row-span-2 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col justify-between shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
+          <div className="lg:col-span-4 lg:row-span-2 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col justify-between shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
             
             {/* Top Part: Uncut Portrait Frame Matching Original Photo Dimensions (537:547) */}
             <div>
@@ -281,7 +278,7 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
               CELL 4: BOTTOM-LEFT CORE PRIMITIVES (Cols 1-3, Row 2 — 3/12 width)
               User Request: "swap content of scholarly impact with core primitives"
               ─────────────────────────────────────────────────────────────────── */}
-          <div className="lg:col-span-3 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all">
+          <div className="lg:col-span-3 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all">
             <div className="flex flex-1 flex-col justify-evenly gap-3">
               <div className="flex items-center justify-between mb-2.5">
                 <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
@@ -329,7 +326,7 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
           {/* ───────────────────────────────────────────────────────────────────
               CELL 5: BOTTOM-MIDDLE SLIM SCHOLARLY PROFILES (Cols 4-5, Row 2 — 2/12 width)
               ─────────────────────────────────────────────────────────────────── */}
-          <div className="lg:col-span-2 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-4 sm:p-5 flex flex-col justify-between shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
+          <div className="lg:col-span-2 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-4 sm:p-5 flex flex-col justify-between shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all group">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs sm:text-sm font-mono font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                 Profiles
@@ -428,7 +425,7 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
           {/* ───────────────────────────────────────────────────────────────────
               CELL 6: BOTTOM-MIDDLE-RIGHT PEDIGREE & SUPERVISION (Cols 6-8, Row 2 — 3/12 width)
               ─────────────────────────────────────────────────────────────────── */}
-          <div className="lg:col-span-3 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-blue-200/70 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all">
+          <div className="lg:col-span-3 lg:row-span-1 min-h-0 bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:shadow-none hover:border-emerald-500/40 transition-all">
             <div className="flex flex-1 flex-col justify-evenly gap-3">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
@@ -510,7 +507,9 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
             
             {/* Left: 3D Attractor Figure Canvas Wrap (Cols 1-7) */}
             <div className="md:col-span-7 w-full flex items-center justify-center">
-              <Attractor3D />
+              <Suspense fallback={<div className="attractor-loading" aria-label="Loading research figure" />}>
+                <Attractor3D />
+              </Suspense>
             </div>
 
             {/* Right: Text, Headings & Dynamical Focus (Cols 8-12) */}
@@ -627,10 +626,10 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
 
                   {/* Quick stat pills */}
                   <div className="flex flex-wrap gap-2 mt-5">
-                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
                       Ph.D. Scholars
                     </span>
-                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
                       M.Tech Thesis
                     </span>
                     <span className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10">
@@ -654,12 +653,12 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
               <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                 {/* Prereq Card 1: Mathematical Foundations */}
-                <div className="bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-sm hover:border-blue-500/40 transition-all">
+                <div className="bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-sm hover:border-emerald-500/40 transition-all">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 shrink-0">
                       <Binary size={17} strokeWidth={2.3} />
                     </div>
-                    <span className="text-sm sm:text-base font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                    <span className="text-sm sm:text-base font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                       Mathematical Foundations
                     </span>
                   </div>
@@ -699,12 +698,12 @@ export const HomePage: React.FC<HomePageProps> = ({ data }) => {
                 </div>
 
                 {/* Prereq Card 4: Application Package */}
-                <div className="bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-sm hover:border-blue-500/40 transition-all">
+                <div className="bg-white/85 dark:bg-[#0E1015]/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col gap-3 shadow-sm hover:border-emerald-500/40 transition-all">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 shrink-0">
                       <FileText size={17} strokeWidth={2.3} />
                     </div>
-                    <span className="text-sm sm:text-base font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                    <span className="text-sm sm:text-base font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                       Application Package
                     </span>
                   </div>
@@ -935,7 +934,7 @@ const ContactForm: React.FC = () => {
       </button>
 
       {status === 'error' && (
-        <p className="text-xs text-blue-500 text-center m-0">
+        <p className="text-xs text-emerald-500 text-center m-0">
           Failed to transmit. Please email directly to mahmad9@jmi.ac.in
         </p>
       )}

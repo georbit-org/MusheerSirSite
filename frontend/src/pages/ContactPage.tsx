@@ -459,7 +459,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ settings }) => {
                   </a>
                 </div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                  6,850+ citations &bull; h-index 45 &bull; i10-index 120
+                  5,296 citations (Google Scholar) &bull; 3,878 citations (Scopus) &bull; h-index 42 (Google Scholar), 36 (Scopus)
                 </div>
               </div>
 

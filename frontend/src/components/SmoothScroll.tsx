@@ -13,19 +13,36 @@ export const SmoothScroll: React.FC = () => {
   useEffect(() => {
     // Check if user prefers reduced motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    const lenis = new Lenis({
-      duration: 1.15,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1.05,
-      touchMultiplier: 1.8,
-    });
+    const lenis = prefersReducedMotion
+      ? null
+      : new Lenis({
+          duration: 1.15,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: 'vertical',
+          gestureOrientation: 'vertical',
+          smoothWheel: true,
+          wheelMultiplier: 1.05,
+          touchMultiplier: 1.8,
+        });
 
     setLenisInstance(lenis);
+
+    const handleSectionNavigation = (event: Event) => {
+      const sectionId = (event as CustomEvent<string>).detail;
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+
+      if (lenis) {
+        lenis.scrollTo(section, { offset: -112 });
+      } else {
+        section.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
+    };
+    window.addEventListener('portfolio:scroll-to-section', handleSectionNavigation);
+
+    if (!lenis) {
+      return () => window.removeEventListener('portfolio:scroll-to-section', handleSectionNavigation);
+    }
 
     let rafId: number;
     const raf = (time: number) => {
@@ -48,18 +65,21 @@ export const SmoothScroll: React.FC = () => {
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('portfolio:scroll-to-section', handleSectionNavigation);
       lenis.destroy();
     };
   }, []);
 
   // Smoothly reset scroll on route transition
   useEffect(() => {
+    if (location.pathname === '/' && location.hash) return;
+
     if (lenisInstance) {
       lenisInstance.scrollTo(0, { immediate: true });
     } else {
       window.scrollTo(0, 0);
     }
-  }, [location.pathname, lenisInstance]);
+  }, [location.pathname]);
 
   const scrollToTop = () => {
     if (lenisInstance) {

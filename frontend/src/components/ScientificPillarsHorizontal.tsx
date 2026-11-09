@@ -40,10 +40,10 @@ const themeMetadata = [
     code: '02 / OPTIMIZATION',
     icon: Binary,
     accentColor: 'blue',
-    textAccent: 'text-blue-600 dark:text-blue-400',
-    bgAccent: 'bg-blue-500/10',
-    borderAccent: 'border-blue-500/30',
-    activeGlow: 'border-blue-500/70 shadow-blue-500/10',
+    textAccent: 'text-emerald-600 dark:text-emerald-400',
+    bgAccent: 'bg-emerald-500/10',
+    borderAccent: 'border-emerald-500/30',
+    activeGlow: 'border-emerald-500/70 shadow-emerald-500/10',
     tags: [
       'Bijective 8×8 S-Boxes',
       'Galois Fields GF(2⁸)',
@@ -74,10 +74,10 @@ const themeMetadata = [
     code: '04 / IOT & DEEP LEARNING',
     icon: Activity,
     accentColor: 'blue',
-    textAccent: 'text-blue-600 dark:text-blue-400',
-    bgAccent: 'bg-blue-500/10',
-    borderAccent: 'border-blue-500/30',
-    activeGlow: 'border-blue-500/70 shadow-blue-500/10',
+    textAccent: 'text-emerald-600 dark:text-emerald-400',
+    bgAccent: 'bg-emerald-500/10',
+    borderAccent: 'border-emerald-500/30',
+    activeGlow: 'border-emerald-500/70 shadow-emerald-500/10',
     tags: [
       'Lightweight PUF & ECC Protocols',
       'Internet of Drones (IoD)',
@@ -134,7 +134,7 @@ export const ScientificPillarsHorizontal: React.FC<ScientificPillarsProps> = ({ 
               <span>Dynamical Systems &bull; Phase Space Cryptography</span>
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
               <span>Optimal Bijective S-Boxes &bull; Galois Field GF(2⁸)</span>
             </div>
             <div className="flex items-center gap-2.5">
@@ -142,7 +142,7 @@ export const ScientificPillarsHorizontal: React.FC<ScientificPillarsProps> = ({ 
               <span>Healthcare DICOM &bull; Compressive Telemedicine</span>
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
               <span>Edge IoT Protocols &bull; Applied Biometrics AI</span>
             </div>
           </div>

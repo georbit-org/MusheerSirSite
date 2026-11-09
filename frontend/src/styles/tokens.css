@@ -29,10 +29,10 @@
   --border-strong: #0F172A;
 
   /* Kinetic grid interaction accent */
-  --accent-interaction: #2563EB;
-  --accent-interaction-tint: rgba(37, 99, 235, 0.10);
-  --accent-interaction-border: rgba(37, 99, 235, 0.35);
-  --accent-interaction-glow: rgba(37, 99, 235, 0.14);
+  --accent-interaction: #15803D;
+  --accent-interaction-tint: rgba(21, 128, 61, 0.10);
+  --accent-interaction-border: rgba(21, 128, 61, 0.35);
+  --accent-interaction-glow: rgba(21, 128, 61, 0.14);
 
   /* Primary Accent: Sage Forest Green */
   --accent-sage: #16A34A;
@@ -86,8 +86,8 @@ html.dark {
   /* Crisp Dark Theme Scale */
   --palette-c1-charcoal: #F8FAFC;
   --palette-c2-offwhite: #090A0F;
-  --palette-c3-matcha: #60A5FA;
-  --palette-c4-sage: #3B82F6;
+  --palette-c3-matcha: #4ADE80;
+  --palette-c4-sage: #16A34A;
   --palette-c5-deepink: #E2E8F0;
 
   /* Surfaces & Backgrounds */
@@ -95,8 +95,8 @@ html.dark {
   --bg-secondary: #0E1017;
   --bg-elevated: #131620;
   --bg-dark: #090A0F;
-  --bg-subtle-glow: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.10), transparent 70%);
-  --bg-academic-mesh: radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.06) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(96, 165, 250, 0.05) 0px, transparent 50%);
+  --bg-subtle-glow: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(22, 163, 74, 0.10), transparent 70%);
+  --bg-academic-mesh: radial-gradient(at 100% 0%, rgba(22, 163, 74, 0.06) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(74, 222, 128, 0.05) 0px, transparent 50%);
 
   /* Typography Inks — High Legibility White/Slate */
   --text-primary: #F8FAFC;
@@ -107,30 +107,30 @@ html.dark {
   --border-strong: rgba(255, 255, 255, 0.28);
 
   /* Kinetic grid interaction accent */
-  --accent-interaction: #3B82F6;
-  --accent-interaction-tint: rgba(59, 130, 246, 0.16);
-  --accent-interaction-border: rgba(59, 130, 246, 0.35);
-  --accent-interaction-glow: rgba(59, 130, 246, 0.14);
+  --accent-interaction: #16A34A;
+  --accent-interaction-tint: rgba(22, 163, 74, 0.16);
+  --accent-interaction-border: rgba(22, 163, 74, 0.35);
+  --accent-interaction-glow: rgba(22, 163, 74, 0.14);
 
-  /* Primary Accent: Kinetic Grid Blue */
-  --accent-sage: #3B82F6;
-  --accent-sage-dark: #60A5FA;
-  --accent-sage-hover: #2563EB;
-  --accent-sage-tint: rgba(59, 130, 246, 0.16);
-  --accent-sage-border: rgba(59, 130, 246, 0.35);
+  /* Primary Accent: Sage Forest Green */
+  --accent-sage: #16A34A;
+  --accent-sage-dark: #4ADE80;
+  --accent-sage-hover: #15803D;
+  --accent-sage-tint: rgba(22, 163, 74, 0.16);
+  --accent-sage-border: rgba(22, 163, 74, 0.35);
 
-  /* Secondary Accent: Kinetic Grid Highlight */
-  --accent-matcha: #60A5FA;
-  --accent-matcha-hover: #3B82F6;
-  --accent-matcha-tint: rgba(96, 165, 250, 0.20);
-  --accent-matcha-text: #DBEAFE;
+  /* Secondary Accent: Matcha */
+  --accent-matcha: #4ADE80;
+  --accent-matcha-hover: #16A34A;
+  --accent-matcha-tint: rgba(74, 222, 128, 0.20);
+  --accent-matcha-text: #DCFCE7;
 
   /* Prestige Accents */
-  --accent-gold: #60A5FA;
-  --accent-gold-light: #93C5FD;
-  --accent-gold-tint: rgba(59, 130, 246, 0.15);
-  --accent-gold-border: rgba(59, 130, 246, 0.35);
-  --accent-gold-glow: 0 0 25px rgba(59, 130, 246, 0.25);
+  --accent-gold: #4ADE80;
+  --accent-gold-light: #86EFAC;
+  --accent-gold-tint: rgba(22, 163, 74, 0.15);
+  --accent-gold-border: rgba(22, 163, 74, 0.35);
+  --accent-gold-glow: 0 0 25px rgba(22, 163, 74, 0.25);
 
   /* Scholarly Accents */
   --accent-green: var(--accent-sage-dark);
@@ -156,8 +156,8 @@ html.dark {
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-card: 0 4px 24px -2px rgba(0, 0, 0, 0.5), 0 2px 8px -1px rgba(0, 0, 0, 0.35);
   --shadow-card-hover: 0 16px 36px -4px rgba(0, 0, 0, 0.6), 0 6px 16px -2px rgba(0, 0, 0, 0.4);
-  --shadow-glow-sage: 0 0 32px rgba(59, 130, 246, 0.25);
-  --shadow-glow-matcha: 0 0 24px rgba(96, 165, 250, 0.30);
+  --shadow-glow-sage: 0 0 32px rgba(22, 163, 74, 0.25);
+  --shadow-glow-matcha: 0 0 24px rgba(74, 222, 128, 0.30);
 }
 
 /* Shared Spatial & Typography Dimensions */
@@ -166,10 +166,9 @@ html.dark {
   --transition-smooth: 280ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-spring: 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  --font-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Newsreader", Georgia, "Times New Roman", serif;
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", Menlo, Consolas, Monaco, monospace;
-  --font-cursive: "Dancing Script", "Pacifico", "Alex Brush", "Great Vibes", cursive;
 
   --font-display: 2.75rem;
   --line-display: 1.1;

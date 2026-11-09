@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '../components/Button';
-import { Attractor3D } from '../components/Attractor3D';
 import {
   Lock,
   Binary,
@@ -15,6 +14,10 @@ import {
   Layers,
   Hash,
 } from 'lucide-react';
+
+const Attractor3D = lazy(() =>
+  import('../components/Attractor3D').then(({ Attractor3D: Component }) => ({ default: Component })),
+);
 
 const RESEARCH_PILLARS = [
   {
@@ -166,13 +169,15 @@ export const ResearchPage: React.FC = () => {
             </div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
               <TrendingUp size={14} color="var(--accent-sage-dark)" />
-              <span>h-Index 45 &bull; 6,850+ Citations</span>
+              <span>h-index 42 (Google Scholar) &bull; 5,296 citations (June 2025)</span>
             </div>
           </div>
 
           {/* Interactive Phase Space Attractor Figure */}
           <div style={{ marginBottom: '4rem' }}>
-            <Attractor3D />
+            <Suspense fallback={<div className="attractor-loading" aria-label="Loading research figure" />}>
+              <Attractor3D />
+            </Suspense>
           </div>
 
           {/* Detailed Research Pillars List (Unboxed Editorial Typography) */}

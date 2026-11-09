@@ -1,20 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchHomePagePayload } from './lib/api';
 import { ThemeProvider } from './lib/theme';
 import { Layout } from './components/Layout';
-import { HomePage } from './pages/HomePage';
-import { PublicationsPage } from './pages/PublicationsPage';
-import { ResearchPage } from './pages/ResearchPage';
-import { TeachingPage } from './pages/TeachingPage';
-import { ServicePage } from './pages/ServicePage';
-import { CVPage } from './pages/CVPage';
-import { GroupPage } from './pages/GroupPage';
-import { NewsPage } from './pages/NewsPage';
-import { JoinPage } from './pages/JoinPage';
-import { ContactPage } from './pages/ContactPage';
-import { StyleguidePage } from './pages/StyleguidePage';
+const HomePage = lazy(() => import('./pages/HomePage').then(({ HomePage }) => ({ default: HomePage })));
+const PublicationsPage = lazy(() => import('./pages/PublicationsPage').then(({ PublicationsPage }) => ({ default: PublicationsPage })));
+const TeachingPage = lazy(() => import('./pages/TeachingPage').then(({ TeachingPage }) => ({ default: TeachingPage })));
+const ServicePage = lazy(() => import('./pages/ServicePage').then(({ ServicePage }) => ({ default: ServicePage })));
+const CVPage = lazy(() => import('./pages/CVPage').then(({ CVPage }) => ({ default: CVPage })));
+const GroupPage = lazy(() => import('./pages/GroupPage').then(({ GroupPage }) => ({ default: GroupPage })));
+const NewsPage = lazy(() => import('./pages/NewsPage').then(({ NewsPage }) => ({ default: NewsPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then(({ ContactPage }) => ({ default: ContactPage })));
+const JoinPage = lazy(() => import('./pages/JoinPage').then(({ JoinPage }) => ({ default: JoinPage })));
+const ResearchPage = lazy(() => import('./pages/ResearchPage').then(({ ResearchPage }) => ({ default: ResearchPage })));
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -101,23 +100,24 @@ const App: React.FC = () => {
   return (
     <ThemeProvider>
       <Layout settings={data.settings}>
-        <Routes>
-          <Route path="/" element={<HomePage data={data} />} />
-          <Route path="/research" element={<HomePage data={data} />} />
-          <Route path="/research/:slug" element={<HomePage data={data} />} />
-          <Route
-            path="/publications"
-            element={<PublicationsPage settings={data.settings} />}
-          />
-          <Route path="/teaching" element={<HomePage data={data} />} />
-          <Route path="/service" element={<HomePage data={data} />} />
-          <Route path="/cv" element={<CVPage />} />
-          <Route path="/group" element={<GroupPage />} />
-          <Route path="/news" element={<NewsPage />} />
-          <Route path="/join" element={<HomePage data={data} />} />
-          <Route path="/contact" element={<HomePage data={data} />} />
-          <Route path="/styleguide" element={<StyleguidePage />} />
-        </Routes>
+        <Suspense fallback={<div className="route-loading" role="status">Loading page…</div>}>
+          <Routes>
+            <Route path="/" element={<HomePage data={data} />} />
+            <Route path="/research" element={<ResearchPage />} />
+            <Route path="/research/:slug" element={<ResearchPage />} />
+            <Route
+              path="/publications"
+              element={<PublicationsPage settings={data.settings} />}
+            />
+            <Route path="/teaching" element={<TeachingPage />} />
+            <Route path="/service" element={<ServicePage />} />
+            <Route path="/cv" element={<CVPage />} />
+            <Route path="/group" element={<GroupPage />} />
+            <Route path="/news" element={<NewsPage />} />
+            <Route path="/join" element={<JoinPage />} />
+            <Route path="/contact" element={<ContactPage settings={data.settings} />} />
+          </Routes>
+        </Suspense>
       </Layout>
     </ThemeProvider>
   );

@@ -11,11 +11,6 @@
 @import "@fontsource/inter/600.css";
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
-@import "@fontsource/alex-brush/400.css";
-@import "@fontsource/great-vibes/400.css";
-@import "@fontsource/dancing-script/700.css";
-@import "@fontsource/pacifico/400.css";
-
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;

@@ -196,7 +196,7 @@ export const HonorsTimelineAndMarquee: React.FC<HonorsTimelineAndMarqueeProps> =
                   {/* Content Stack */}
                   <div className="pt-0.5">
                     {/* Timestamp / Date */}
-                    <div className="text-[10px] sm:text-[11px] font-mono font-medium text-blue-600 dark:text-emerald-400 mb-1">
+                    <div className="text-[10px] sm:text-[11px] font-mono font-medium text-emerald-600 dark:text-emerald-400 mb-1">
                       {dateStr}
                     </div>
 
@@ -286,7 +286,7 @@ export const HonorsTimelineAndMarquee: React.FC<HonorsTimelineAndMarqueeProps> =
                     <div className="flex items-center justify-between gap-2 mb-1.5">
                       <span className={`text-[9px] sm:text-[10px] font-mono uppercase font-bold tracking-wider px-2 py-0.5 rounded-md ${
                         isNature
-                          ? 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20'
+                          ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20'
                           : isSpringer
                           ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20'
                           : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20'

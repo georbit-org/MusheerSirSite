@@ -66,22 +66,42 @@ export const Layout: React.FC<LayoutProps> = ({
     if (location.pathname !== '/' || !location.hash) return;
 
     const sectionId = decodeURIComponent(location.hash.slice(1));
-    const frame = window.requestAnimationFrame(() => {
+    let observer: MutationObserver | undefined;
+    let timeoutId: number | undefined;
+    const scrollToHash = () => {
       const section = document.getElementById(sectionId);
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-        setActiveSection(sectionId);
+      if (!section) return false;
+
+      window.dispatchEvent(new CustomEvent('portfolio:scroll-to-section', { detail: sectionId }));
+      setActiveSection(sectionId);
+      observer?.disconnect();
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+      return true;
+    };
+
+    const frame = window.requestAnimationFrame(() => {
+      if (!scrollToHash()) {
+        observer = new MutationObserver(scrollToHash);
+        observer.observe(document.getElementById('main-content') ?? document.body, {
+          childList: true,
+          subtree: true,
+        });
+        timeoutId = window.setTimeout(() => observer?.disconnect(), 5000);
       }
     });
 
-    return () => window.cancelAnimationFrame(frame);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer?.disconnect();
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
   }, [location.pathname, location.hash]);
 
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
     const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      window.dispatchEvent(new CustomEvent('portfolio:scroll-to-section', { detail: id }));
       setActiveSection(id);
     } else {
       navigate(`/#${id}`);

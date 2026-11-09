@@ -16,15 +16,15 @@ html:not(.dark) #root [role="button"]:not(.scientific-pillar-card):not(.footer-l
 html:not(.dark) #root a[class*="btn"]:not(.navbar-control):not(.footer-link):hover,
 html:not(.dark) #root a[class*="cursor-pointer"]:not(.navbar-control):not(.footer-link):hover {
   --tw-bg-opacity: 1;
-  background-color: rgb(15 23 42 / var(--tw-bg-opacity, 1)) !important;
-  border-color: rgb(15 23 42 / var(--tw-bg-opacity, 1)) !important;
+  background-color: var(--text-primary) !important;
+  border-color: var(--text-primary) !important;
   color: #fff !important;
 }
 
 html:not(.dark) #root footer .footer-link:hover {
   background-color: transparent !important;
   border-color: transparent !important;
-  color: rgb(15 23 42) !important;
+  color: var(--text-primary) !important;
 }
 
 #root .contact-form-box form,
@@ -36,21 +36,21 @@ html:not(.dark) #root footer .footer-link:hover {
 }
 
 #root .contact-form-box .contact-submit-button {
-  background-color: #0f172a;
-  border: 1px solid rgba(15, 23, 42, 0.2);
+  background-color: var(--text-primary);
+  border: 1px solid var(--border-hairline);
   color: #fff;
 }
 
 html.dark #root .contact-form-box .contact-submit-button {
   background-color: #fff;
   border-color: rgba(255, 255, 255, 0.2);
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 #root .contact-form-box .contact-submit-button:hover,
 html.dark #root .contact-form-box .contact-submit-button:hover {
-  background-color: #0f172a;
-  border-color: #0f172a;
+  background-color: var(--text-primary);
+  border-color: var(--text-primary);
   color: #fff;
 }
 
@@ -73,17 +73,13 @@ html:not(.dark) #root .grid > div {
   line-height: var(--line-body);
 }
 
-#root .font-serif {
-  font-family: var(--font-sans);
-}
-
 #root h1,
 #root h2,
 #root h3,
 #root h4,
 #root h5,
 #root h6 {
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   letter-spacing: 0;
 }
 
@@ -101,6 +97,15 @@ html:not(.dark) #root .grid > div {
 
 #root .editorial-section {
   padding-block: var(--section-spacing);
+}
+
+#root .route-loading,
+#root .attractor-loading {
+  min-height: 12rem;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  font-size: var(--font-body-sm);
 }
 
 .home-viewport {
